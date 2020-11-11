@@ -2,6 +2,7 @@ package com.jakting.rn6pan.utils
 
 import android.app.Application
 import android.content.Context
+import com.jakting.rn6pan.api.data.UserInfo
 
 class MyApplication : Application() {
     override fun onCreate() {
@@ -16,11 +17,11 @@ class MyApplication : Application() {
         var STATE = ""
         var TOKEN = ""
         var COOKIES = ""
-        lateinit var userInfo:UserInfo
+        lateinit var userInfo: UserInfo
         var nowPath = "/"
-        var directoryOrderBy = ""
+        var orderFlag = 0 // 0 为 name，1 为 ctime
+        var defaultOrder = true
         var nameOrderBy = ""
-        var typeOrderBy = ""
         var ctimeOrderBy = ""
     }
 }

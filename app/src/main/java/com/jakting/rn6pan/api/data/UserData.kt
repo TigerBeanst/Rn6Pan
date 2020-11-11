@@ -1,4 +1,4 @@
-package com.jakting.rn6pan.utils
+package com.jakting.rn6pan.api.data
 
 data class createDestination(
     val destination: String,

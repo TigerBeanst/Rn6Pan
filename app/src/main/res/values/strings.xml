@@ -32,6 +32,13 @@
     <string name="file_video_notvip">无法播放</string>
     <string name="file_video_notvip_desc">视频预览功能仅限订阅用户使用</string>
 
+    <string name="file_sort_title">排序方式</string>
+    <string name="file_sort_default">恢复默认排序</string>
+    <string name="file_sort_filename_asc">按文件名正序</string>
+    <string name="file_sort_filename_desc">按文件名倒序</string>
+    <string name="file_sort_ctime_asc">按创建时间正序</string>
+    <string name="file_sort_ctime_desc">按创建时间倒序</string>
+
     <!--about-->
     <string name="about_page_info">介绍</string>
     <string name="about_page_info_desc">就是一个第三方的 6盘 客户端而已</string>

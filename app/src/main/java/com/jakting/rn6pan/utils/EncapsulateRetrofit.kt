@@ -2,7 +2,7 @@ package com.jakting.rn6pan.utils
 
 import com.github.simonpercic.oklog3.OkLogInterceptor
 import com.jakting.rn6pan.BuildConfig
-import com.jakting.rn6pan.`interface`.ApiService
+import com.jakting.rn6pan.api.ApiParse
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class EncapsulateRetrofit {
     companion object {
-        fun init(): ApiService {
+        fun init(): ApiParse {
 
             val okHttpBuilder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
@@ -27,7 +27,7 @@ class EncapsulateRetrofit {
                 .addCallAdapterFactory(RxJava3CallAdapterFactory.createSynchronous())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-            return retrofit.create(ApiService::class.java)
+            return retrofit.create(ApiParse::class.java)
         }
     }
 }

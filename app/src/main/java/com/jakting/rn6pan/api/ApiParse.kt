@@ -1,15 +1,13 @@
-package com.jakting.rn6pan.`interface`
+package com.jakting.rn6pan.api
 
-import com.jakting.rn6pan.utils.*
+import com.jakting.rn6pan.api.data.*
 import io.reactivex.rxjava3.core.Observable
 import okhttp3.RequestBody
 import retrofit2.http.Body
-import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 
-interface ApiService {
+interface ApiParse {
 
     /*
         登录请求
@@ -39,6 +37,24 @@ interface ApiService {
     //列出文件夹下所有文件
     @POST("newfile/list")
     fun getFileOrDirectoryList(@Body requestBody: RequestBody): Observable<FileOrDirectoryList>
+
+    /*
+        预览
+     */
+    //v3/30.预览/80.预览图片地址.md
+    //查询图片预览地址
+    @POST("preview/image")
+    fun getImagePreview(@Body requestBody: RequestBody): Observable<PicturePreview>
+
+    //v3/30.预览/80.预览图片地址.md
+    //查询视频预览地址
+    @POST("preview/video")
+    fun getVideoPreview(@Body requestBody: RequestBody): Observable<VideoPreview>
+
+    //v3/30.预览/80.预览图片地址.md
+    //查询音频预览地址
+    @POST("preview/audio")
+    fun getAudioPreview(@Body requestBody: RequestBody): Observable<AudioPreview>
 
     /*
         离线任务
