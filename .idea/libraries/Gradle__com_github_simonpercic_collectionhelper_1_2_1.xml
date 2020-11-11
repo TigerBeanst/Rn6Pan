@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.simonpercic:collectionhelper:1.2.1">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/collectionhelper/1.2.1/6854c6f3c6fc1710001b1c1163254f6c2901f69a/collectionhelper-1.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/collectionhelper/1.2.1/913a2f170dfb51806c8e938dd132d1e49d37d048/collectionhelper-1.2.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/collectionhelper/1.2.1/7e1cfff2c8cc5f74536b1fde4df4858366114d2e/collectionhelper-1.2.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

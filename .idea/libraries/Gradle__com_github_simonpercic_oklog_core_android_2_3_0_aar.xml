@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.simonpercic:oklog-core-android:2.3.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c4d57386997faaefb8447441e01d31d/jetified-oklog-core-android-2.3.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c4d57386997faaefb8447441e01d31d/jetified-oklog-core-android-2.3.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8c4d57386997faaefb8447441e01d31d/jetified-oklog-core-android-2.3.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/oklog-core-android/2.3.0/4ff054bf49c7856ed6481c7134dddd0207556778/oklog-core-android-2.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/oklog-core-android/2.3.0/a9c96f15d6746ff42b1fff1caa394fbc520e1e6b/oklog-core-android-2.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

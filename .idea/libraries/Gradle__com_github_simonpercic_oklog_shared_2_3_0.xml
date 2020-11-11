@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.simonpercic:oklog-shared:2.3.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/oklog-shared/2.3.0/1442a781ecd523488418207872afb11befeb09e9/oklog-shared-2.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/oklog-shared/2.3.0/40bd23e5ce234b42da3f948ae112b41eb23cfe20/oklog-shared-2.3.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.simonpercic/oklog-shared/2.3.0/8ebc31cc36e070679d5da26acd1a5b7af5c96f66/oklog-shared-2.3.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

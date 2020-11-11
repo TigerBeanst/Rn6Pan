@@ -1,0 +1,22 @@
+<component name="libraryTable">
+  <library name="Gradle: com.scwang.smart:refresh-header-material:2.0.1@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3039bb3191d004ad5b05f8b7d9a4457/jetified-refresh-header-material-2.0.1/annotations.zip!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4566acaf0f8f13309ac000f0db29dec1/jetified-refresh-header-material-2.0.1/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3039bb3191d004ad5b05f8b7d9a4457/jetified-refresh-header-material-2.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3039bb3191d004ad5b05f8b7d9a4457/jetified-refresh-header-material-2.0.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c3039bb3191d004ad5b05f8b7d9a4457/jetified-refresh-header-material-2.0.1/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4566acaf0f8f13309ac000f0db29dec1/jetified-refresh-header-material-2.0.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4566acaf0f8f13309ac000f0db29dec1/jetified-refresh-header-material-2.0.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4566acaf0f8f13309ac000f0db29dec1/jetified-refresh-header-material-2.0.1/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-header-material/2.0.1/e859329d8380063d6f1f59cffc24bf3b144d97f3/refresh-header-material-2.0.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.scwang.smart/refresh-header-material/2.0.1/e806af88625d3740a278391854cdc425df009d04/refresh-header-material-2.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

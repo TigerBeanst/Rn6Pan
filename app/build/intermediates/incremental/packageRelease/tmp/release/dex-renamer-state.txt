@@ -1,0 +1,4 @@
+#Sat Nov 07 18:58:40 CST 2020
+base.0=D\:\\Android\\JavaAndroid\\Rn6Pan\\app\\build\\intermediates\\dex\\release\\mergeDexRelease\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

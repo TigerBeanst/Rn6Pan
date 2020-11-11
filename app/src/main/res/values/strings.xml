@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">氡·6盘</string>
+    <string name="ok">确定</string>
+
+    <!--main-->
+    <string name="main_check_login_status_title">请稍等…</string>
+    <string name="main_check_login_status_second_title">检查登录状态中……</string>
+    <string name="main_check_login_status_title_error">您尚未登录</string>
+    <string name="main_check_login_status_second_title_error">点击前去登录</string>
+    <string name="main_check_login_status_sub_until">订阅有效期至 </string>
+    <string name="main_check_login_status_sub_expires">您的订阅已过期</string>
+
+    <string name="main_file_manager_title">文件管理</string>
+    <string name="main_file_manager_second_title">（未知配额）</string>
+
+    <string name="main_offline_download_title">离线下载</string>
+    <string name="main_offline_download_second_title">（未知配额）</string>
+
+    <string name="main_ticket_title">工单</string>
+    <string name="main_about_title">关于</string>
+
+    <!--login-->
+    <string name="login_toolbar_title">登录6盘</string>
+
+    <!--user-->
+    <string name="user_toolbar_title">个人信息</string>
+
+    <!--file-->
+    <string name="file_toolbar_title">文件管理</string>
+    <string name="file_one_label_filename">文件</string>
+    <string name="file_one_label_size">大小</string>
+    <string name="file_video_notvip">无法播放</string>
+    <string name="file_video_notvip_desc">视频预览功能仅限订阅用户使用</string>
+
+    <!--about-->
+    <string name="about_page_info">介绍</string>
+    <string name="about_page_info_desc">就是一个第三方的 6盘 客户端而已</string>
+    <string name="about_page_dev">开发者</string>
+    <string name="about_page_dev_1">氡·6盘 开发者</string>
+    <string name="about_page_open_source">开放源代码许可</string>
+</resources>

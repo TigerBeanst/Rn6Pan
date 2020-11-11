@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:contentDescription="@string/main_file_manager_title"
+        android:title="@string/main_file_manager_title" />
+    <item android:contentDescription="@string/main_file_manager_second_title"
+        android:title="@string/main_file_manager_second_title" />
+</menu>

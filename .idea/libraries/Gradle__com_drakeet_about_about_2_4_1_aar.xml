@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="Gradle: com.drakeet.about:about:2.4.1@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee53be6f65c722e40d826ec4907454da/jetified-about-2.4.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee53be6f65c722e40d826ec4907454da/jetified-about-2.4.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ee53be6f65c722e40d826ec4907454da/jetified-about-2.4.1/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.drakeet.about/about/2.4.1/a06a06e0ee5c2d41a19f2b8f2a0cee466b2eceba/about-2.4.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.drakeet.about/about/2.4.1/1302e6e7e65d8d21f741801a5dbb98c83a0e1868/about-2.4.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
