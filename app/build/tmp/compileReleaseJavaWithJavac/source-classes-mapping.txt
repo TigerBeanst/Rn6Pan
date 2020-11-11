@@ -1,2 +1,0 @@
-com/jakting/rn6pan/BuildConfig.java
- com.jakting.rn6pan.BuildConfig
