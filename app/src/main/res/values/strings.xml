@@ -29,8 +29,10 @@
     <string name="file_toolbar_title">文件管理</string>
     <string name="file_one_label_filename">文件</string>
     <string name="file_one_label_size">大小</string>
-    <string name="file_video_notvip">无法播放</string>
-    <string name="file_video_notvip_desc">视频预览功能仅限订阅用户使用</string>
+    <string name="file_image_not_preview">无法预览</string>
+    <string name="file_image_not_preview_desc">此图片暂无法预览，请下载后查看</string>
+    <string name="file_video_not_vip">无法播放</string>
+    <string name="file_video_not_vip_desc">视频预览功能仅限订阅用户使用</string>
 
     <string name="file_sort_title">排序方式</string>
     <string name="file_sort_default">恢复默认排序</string>
@@ -41,7 +43,7 @@
 
     <!--about-->
     <string name="about_page_info">介绍</string>
-    <string name="about_page_info_desc">就是一个第三方的 6盘 客户端而已</string>
+    <string name="about_page_info_desc">就是一个第三方的6盘客户端而已</string>
     <string name="about_page_dev">开发者</string>
     <string name="about_page_dev_1">氡·6盘 开发者</string>
     <string name="about_page_open_source">开放源代码许可</string>

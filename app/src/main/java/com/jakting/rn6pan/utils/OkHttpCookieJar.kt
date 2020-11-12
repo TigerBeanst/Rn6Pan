@@ -15,7 +15,9 @@ class OkHttpCookieJar : CookieJar {
 
     override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
         val cookieStr: String = encodeCookie(cookies)
-        saveCookie(url.host(), cookieStr)
+        if(!cookieStr.contains("locale") && !cookieStr.contains("expires")){ //掉登录了
+            saveCookie(url.host(), cookieStr)
+        }
     }
 
     override fun loadForRequest(url: HttpUrl): List<Cookie> {

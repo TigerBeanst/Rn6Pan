@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.JsonParser
+import retrofit2.HttpException
 import java.math.BigDecimal
 
 val NUDE_URL = "2dland.cn"
@@ -61,4 +63,8 @@ fun getPrintSize(size: Long): String? {
         value = BigDecimal(value / 1024).setScale(2, BigDecimal.ROUND_DOWN).toDouble()
         value.toString() + "TB"
     }
+}
+
+fun getErrorString(t:Throwable): String {
+     return (t as HttpException).response()?.errorBody()?.string().let { return@let it.toString() }
 }

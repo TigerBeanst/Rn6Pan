@@ -66,11 +66,11 @@ class FileListActivity : BaseActivity() {
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ fileOrDirectoryList ->
-                logd("onNext // checkDestination")
+                logd("onNext // getFileOrDirectoryList")
                 nowFileOrDirectoryList = fileOrDirectoryList
                 setAdapter()
             }) { t ->
-                logd("onError // checkDestination")
+                logd("onError // getFileOrDirectoryList")
                 t.printStackTrace()
             }
     }
