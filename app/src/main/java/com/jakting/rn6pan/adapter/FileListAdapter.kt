@@ -12,23 +12,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonParser
+import com.jakting.rn6pan.MainActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.api.data.FileOrDirectory
+import com.jakting.rn6pan.user.FileListActivity
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
+import com.jakting.rn6pan.utils.MyApplication.Companion.nowPath
 import com.jakting.rn6pan.utils.MyApplication.Companion.userInfo
 import com.maning.imagebrowserlibrary.ImageEngine
 import com.maning.imagebrowserlibrary.MNImageBrowser
 import com.maning.imagebrowserlibrary.model.ImageBrowserConfig.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_user_file_list.*
+import kotlinx.android.synthetic.main.activity_user_file_list.view.*
 import kotlinx.android.synthetic.main.content_file_info.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.text.SimpleDateFormat
 
 
-class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRootPath: Boolean) :
+class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRootPath: Boolean,val activity:FileListActivity) :
     RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
     companion object {
@@ -51,23 +56,33 @@ class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRoot
         viewHolder.itemView.setOnClickListener {
             val position = viewHolder.adapterPosition
             val fileOrDirectory = fileOrDirectoryList[position]
+            /*
+                ===============文件夹==============
+             */
             if (fileOrDirectory.directory) {
+                nowPath = fileOrDirectory.path
+                activity.file_list_swipeLayout.autoRefresh()
 
-            } else if (fileOrDirectory.mime.contains("video")) {
-                //播放视频
-                if (userInfo.vip != 0) { //已订阅
+            } else {
+                when {
+                    fileOrDirectory.mime.contains("video") /*视频*/ -> {
+                        if (userInfo.vip != 0) { //已订阅
 
-                } else { //未订阅
-                    MaterialAlertDialogBuilder(parent.context)
-                        .setTitle(parent.context.getString(R.string.file_video_not_vip))
-                        .setMessage(parent.context.getString(R.string.file_video_not_vip_desc))
-                        .setPositiveButton(parent.context.getString(R.string.ok)) { _, _ -> }
-                        .show()
+                        } else { //未订阅
+                            MaterialAlertDialogBuilder(parent.context)
+                                .setTitle(parent.context.getString(R.string.file_video_not_vip))
+                                .setMessage(parent.context.getString(R.string.file_video_not_vip_desc))
+                                .setPositiveButton(parent.context.getString(R.string.ok)) { _, _ -> }
+                                .show()
+                        }
+                    }
+                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
+                        getImagePreviewURL(fileOrDirectory.identity, viewHolder)
+                    }
+                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
+
+                    }
                 }
-            } else if (fileOrDirectory.mime.contains("image")) {
-                //图片预览
-                getImagePreviewURL(fileOrDirectory.identity, viewHolder)
-
             }
             viewHolder.itemView.setOnLongClickListener {
                 val position = viewHolder.adapterPosition
@@ -94,13 +109,13 @@ class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRoot
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ picturePreview ->
                 logd("onNext // getImagePreview")
-                clickImage(picturePreview.playAddress,viewHolder)
+                clickImage(picturePreview.playAddress, viewHolder)
             }) { t ->
                 logd("onError // getImagePreview")
-                val errorString:String = getErrorString(t)
+                val errorString: String = getErrorString(t)
                 logd(errorString)
                 val errorJsonObject = JsonParser().parse(errorString).asJsonObject
-                if(!errorJsonObject.get("success").asBoolean){
+                if (!errorJsonObject.get("success").asBoolean) {
                     MaterialAlertDialogBuilder(parentContext)
                         .setTitle(parentContext.getString(R.string.file_image_not_preview))
                         .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
@@ -110,7 +125,7 @@ class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRoot
             }
     }
 
-    private fun clickImage(playAdress:String,viewHolder: ViewHolder) {
+    private fun clickImage(playAdress: String, viewHolder: ViewHolder) {
         val transformType = TransformType.Transform_Default
         val indicatorType = IndicatorType.Indicator_Number
         val screenOrientationType = ScreenOrientationType.Screenorientation_Default
@@ -151,6 +166,11 @@ class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRoot
                 fileOrDirectory.mime.contains("application/zip") -> {
                     holder.fileOrDirectoryIcon.setImageDrawable(
                         ContextCompat.getDrawable(appContext, R.drawable.file_icon_zip)
+                    )
+                }
+                fileOrDirectory.mime.contains("application/x-dosexec") -> {
+                    holder.fileOrDirectoryIcon.setImageDrawable(
+                        ContextCompat.getDrawable(appContext, R.drawable.file_icon_exe)
                     )
                 }
                 else -> {

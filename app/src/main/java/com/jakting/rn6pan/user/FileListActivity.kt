@@ -49,7 +49,7 @@ class FileListActivity : BaseActivity() {
 
     private fun initFileOrDirectoryList() {
         val jsonForPost =
-            "{\"nowPath\":\"$nowPath\",\"orderby\":[" +
+            "{\"parentPath\":\"$nowPath\",\"orderby\":[" +
                     (if (!defaultOrder) {
                         (if (orderFlag == 0)
                             (if (nameOrderBy != "") "[\"name\",\"$nameOrderBy\"]" else "")
@@ -79,7 +79,7 @@ class FileListActivity : BaseActivity() {
         val layoutManager = LinearLayoutManager(this)
         file_list_recyclerView.layoutManager = layoutManager
         val isRoot = nowPath == ""
-        val adapter = FileListAdapter(nowFileOrDirectoryList.dataList, isRoot)
+        val adapter = FileListAdapter(nowFileOrDirectoryList.dataList, isRoot,this)
         file_list_recyclerView.adapter = adapter
         file_list_swipeLayout.finishRefresh(1000)
     }

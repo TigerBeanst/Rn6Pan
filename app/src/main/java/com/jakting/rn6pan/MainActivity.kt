@@ -8,7 +8,6 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
-import com.google.gson.JsonParser
 import com.jakting.rn6pan.user.FileListActivity
 import com.jakting.rn6pan.user.LoginActivity
 import com.jakting.rn6pan.user.UserActivity
