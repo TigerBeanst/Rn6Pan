@@ -45,11 +45,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/file_bottom_appbar"
-        app:navigationIcon="@drawable/ic_baseline_sort_24" />
+        app:hideOnScroll="true"
+        app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24"
+        app:navigationContentDescription="@string/file_to_parent_folder"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_assignment_24" />
+        app:srcCompat="@drawable/ic_baseline_assignment_24"
+        android:contentDescription="TODO" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

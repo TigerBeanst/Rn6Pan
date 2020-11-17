@@ -34,6 +34,8 @@
     <string name="file_video_not_vip">无法播放</string>
     <string name="file_video_not_vip_desc">视频预览功能仅限订阅用户使用</string>
 
+    <string name="file_to_parent_folder">返回上个文件夹</string>
+    <string name="file_to_parent_folder_toast">已经是根目录了</string>
     <string name="file_sort_title">排序方式</string>
     <string name="file_sort_default">恢复默认排序</string>
     <string name="file_sort_filename_asc">按文件名正序</string>

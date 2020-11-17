@@ -1,4 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_file_sort"
+        android:contentDescription="@string/file_sort_title"
+        android:title="@string/file_sort_title"
+        android:icon="@drawable/ic_baseline_sort_24"
+        app:showAsAction="always"/>
     <item android:contentDescription="@string/main_file_manager_title"
         android:title="@string/main_file_manager_title" />
     <item android:contentDescription="@string/main_file_manager_second_title"

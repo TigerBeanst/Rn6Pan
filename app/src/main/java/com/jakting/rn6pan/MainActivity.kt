@@ -52,7 +52,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         main_about_layout.setOnClickListener(this)
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun getUserInfo() {
         val observable = EncapsulateRetrofit.init().getUserInfo(createDestinationPostBody)
         observable.subscribeOn(Schedulers.io())
@@ -95,7 +95,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 main_check_login_status_title.text = userInfo.name
                 main_check_login_status_second_title.text =
                     if (userInfo.vip != 0) (getString(R.string.main_check_login_status_sub_until) +
-                            SimpleDateFormat("YYYY-MM-dd").format(
+                            SimpleDateFormat("yyyy-MM-dd").format(
                                 userInfo.vipExpireTime
                             )) else getString(R.string.main_check_login_status_sub_expires)
                 main_file_manager_second_title.text =

@@ -2,6 +2,7 @@ package com.jakting.rn6pan.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonParser
-import com.jakting.rn6pan.MainActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.user.FileListActivity
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
-import com.jakting.rn6pan.utils.MyApplication.Companion.nowPath
+import com.jakting.rn6pan.utils.MyApplication.Companion.parentPathList
 import com.jakting.rn6pan.utils.MyApplication.Companion.userInfo
 import com.maning.imagebrowserlibrary.ImageEngine
 import com.maning.imagebrowserlibrary.MNImageBrowser
@@ -26,14 +26,13 @@ import com.maning.imagebrowserlibrary.model.ImageBrowserConfig.*
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import kotlinx.android.synthetic.main.activity_user_file_list.view.*
 import kotlinx.android.synthetic.main.content_file_info.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.text.SimpleDateFormat
 
 
-class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRootPath: Boolean,val activity:FileListActivity) :
+class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, private val activity:FileListActivity) :
     RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
     companion object {
@@ -60,14 +59,16 @@ class FileListAdapter(val fileOrDirectoryList: List<FileOrDirectory>, val isRoot
                 ===============文件夹==============
              */
             if (fileOrDirectory.directory) {
-                nowPath = fileOrDirectory.path
+                parentPathList.add(fileOrDirectory.path)
                 activity.file_list_swipeLayout.autoRefresh()
 
             } else {
                 when {
                     fileOrDirectory.mime.contains("video") /*视频*/ -> {
                         if (userInfo.vip != 0) { //已订阅
-
+                            val intent = Intent(parentContext,PlayerActivity::class.java)
+                            intent.putExtra("identity",fileOrDirectory.identity)
+                            parentContext.startActivity(intent)
                         } else { //未订阅
                             MaterialAlertDialogBuilder(parent.context)
                                 .setTitle(parent.context.getString(R.string.file_video_not_vip))
