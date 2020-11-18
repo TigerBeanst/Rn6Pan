@@ -1,14 +1,13 @@
 package com.jakting.rn6pan.user
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
@@ -17,15 +16,13 @@ import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileOrDirectoryList
-import com.jakting.rn6pan.utils.EncapsulateRetrofit
+import com.jakting.rn6pan.databinding.ActivityUserFileListBinding
+import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.ctimeOrderBy
 import com.jakting.rn6pan.utils.MyApplication.Companion.defaultOrder
 import com.jakting.rn6pan.utils.MyApplication.Companion.nameOrderBy
 import com.jakting.rn6pan.utils.MyApplication.Companion.orderFlag
 import com.jakting.rn6pan.utils.MyApplication.Companion.parentPathList
-import com.jakting.rn6pan.utils.isStringIllegal
-import com.jakting.rn6pan.utils.logd
-import com.jakting.rn6pan.utils.toast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
@@ -39,6 +36,8 @@ import okhttp3.RequestBody
 
 class FileListActivity : BaseActivity() {
     var isShowFabMenu = false
+    lateinit var adapter: FileListAdapter
+    lateinit var mBinding: ActivityUserFileListBinding
 
     companion object {
         lateinit var nowFileOrDirectoryList: FileOrDirectoryList
@@ -47,11 +46,13 @@ class FileListActivity : BaseActivity() {
         lateinit var hideAnimation: Animation
         lateinit var showMenuAnimation: Animation
         lateinit var hideMenuAnimation: Animation
+        lateinit var mPresenter: Presenter
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_user_file_list)
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_user_file_list)
+        mPresenter = Presenter(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initFAB()
@@ -205,8 +206,9 @@ class FileListActivity : BaseActivity() {
 
     private fun setAdapter() {
         val layoutManager = LinearLayoutManager(this)
-        file_list_recyclerView.layoutManager = layoutManager
-        val adapter = FileListAdapter(nowFileOrDirectoryList.dataList, this)
+        mBinding.fileListRecyclerView.layoutManager = layoutManager
+        adapter = FileListAdapter(nowFileOrDirectoryList.dataList, this)
+        adapter.setListener(mPresenter)
         if (parentPathList.size > 1) {
             if (supportActionBar != null) {
                 supportActionBar!!.title = nowFileOrDirectoryList.parent.name
@@ -216,7 +218,7 @@ class FileListActivity : BaseActivity() {
                 supportActionBar!!.title = getString(R.string.file_toolbar_title)
             }
         }
-        file_list_recyclerView.adapter = adapter
+        mBinding.fileListRecyclerView.adapter = adapter
         file_list_swipeLayout.finishRefresh(0)
 
     }

@@ -1,76 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <data>
+        <variable
+            name="presenter"
+            type="com.jakting.rn6pan.utils.Presenter"/>
+    </data>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorBackground"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.scwang.smart.refresh.layout.SmartRefreshLayout
-        android:id="@+id/file_list_swipeLayout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="?attr/actionBarSize"
-        app:srlDragRate="0.4">
-
-        <com.scwang.smart.refresh.header.MaterialHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/file_list_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:overScrollMode="never"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    </com.scwang.smart.refresh.layout.SmartRefreshLayout>
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottomAppBar"
-        style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:hideOnScroll="true"
-        app:menu="@menu/file_bottom_appbar"
-        app:navigationContentDescription="@string/file_to_parent_folder"
-        app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24" />
-
-    <LinearLayout
-        android:id="@+id/file_fab_menu_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginBottom="100dp"
-        android:gravity="center"
         android:orientation="vertical">
 
-        <include layout="@layout/file_fab_upload_layout"/>
-        <include layout="@layout/file_fab_create_folder_layout"/>
-        <include layout="@layout/file_fab_transmission_layout"/>
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </LinearLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorBackground"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/file_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/file_upload"
-        app:backgroundTint="@color/colorAccent"
-        app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_add_24"
-        app:tint="@android:color/white" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.scwang.smart.refresh.layout.SmartRefreshLayout
+            android:id="@+id/file_list_swipeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginBottom="?attr/actionBarSize"
+            app:srlDragRate="0.4">
+
+            <com.scwang.smart.refresh.header.MaterialHeader
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/file_list_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </com.scwang.smart.refresh.layout.SmartRefreshLayout>
+
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottomAppBar"
+            style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:hideOnScroll="true"
+            app:menu="@menu/menu_file_bottom_appbar"
+            app:navigationContentDescription="@string/file_to_parent_folder"
+            app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24" />
+
+        <LinearLayout
+            android:id="@+id/file_fab_menu_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="100dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <include layout="@layout/file_fab_upload_layout" />
+
+            <include layout="@layout/file_fab_create_folder_layout" />
+
+            <include layout="@layout/file_fab_transmission_layout" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/file_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/file_upload"
+            app:backgroundTint="@color/colorAccent"
+            app:layout_anchor="@id/bottomAppBar"
+            app:srcCompat="@drawable/ic_baseline_add_24"
+            app:tint="@android:color/white" />
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

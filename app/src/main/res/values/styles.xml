@@ -4,6 +4,8 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Surface</item>
         <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">?attr/isLightTheme</item>

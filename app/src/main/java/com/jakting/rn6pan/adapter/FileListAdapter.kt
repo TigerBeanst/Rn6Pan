@@ -9,12 +9,15 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonParser
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.api.data.FileOrDirectory
+import com.jakting.rn6pan.databinding.ItemFileOrDirectoryBinding
 import com.jakting.rn6pan.user.FileListActivity
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
@@ -37,9 +40,33 @@ class FileListAdapter(
     private val activity: FileListActivity
 ) :
     RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
+    lateinit var parentContext: Context
+    lateinit var mListener: ItemListener
+    var mSwitch: ObservableBoolean
+    private var mBooleanList: ArrayList<ObservableBoolean> = ArrayList()
+    var postionLongPress = 0
 
-    companion object {
-        lateinit var parentContext: Context
+    init {
+        for (i in fileOrDirectoryList.indices) {
+            mBooleanList.add(ObservableBoolean(false))
+        }
+        mSwitch = ObservableBoolean(false)
+    }
+
+
+    fun setListener(listener: ItemListener) {
+        mListener = listener
+    }
+
+    fun startActionMode() {
+        mSwitch.set(true)
+    }
+
+    fun stopActionMode() {
+        for (checked in mBooleanList) {
+            checked.set(false)
+        }
+        mSwitch.set(false)
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -47,6 +74,7 @@ class FileListAdapter(
         val fileOrDirectoryName: TextView = view.findViewById(R.id.file_list_filename)
         val fileOrDirectoryInfo: TextView = view.findViewById(R.id.file_list_info)
         val fileOrDirectoryImagePreview: ImageView = view.findViewById(R.id.file_list_image_preview)
+        var mBinding: ItemFileOrDirectoryBinding = DataBindingUtil.bind(view)!!
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -89,12 +117,12 @@ class FileListAdapter(
                     }
                 }
             }
-            viewHolder.itemView.setOnLongClickListener {
-                val position = viewHolder.adapterPosition
-                val fileOrDirectory = fileOrDirectoryList[position]
-                showBottomDialog(fileOrDirectory, parent)
-                true
-            }
+//            viewHolder.itemView.setOnLongClickListener {
+//                val position = viewHolder.adapterPosition
+//                val fileOrDirectory = fileOrDirectoryList[position]
+//                showBottomDialog(fileOrDirectory, parent)
+//                true
+//            }
         }
         return viewHolder
     }
@@ -156,6 +184,10 @@ class FileListAdapter(
 
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
+        holder.mBinding.visible = mSwitch
+        holder.mBinding.checked = mBooleanList[position]
+        holder.mBinding.listener = mListener
         val fileOrDirectory = fileOrDirectoryList[position]
         if (fileOrDirectory.directory) {
             holder.fileOrDirectoryIcon.setImageDrawable(
