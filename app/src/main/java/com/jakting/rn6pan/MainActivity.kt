@@ -121,6 +121,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }) { t ->
                 logd("onError // createDestination")
                 t.printStackTrace()
+                toast(getString(R.string.action_fail))
             }
     }
 
@@ -155,6 +156,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }) { t ->
                 logd("onError // checkDestination")
                 t.printStackTrace()
+                toast(getString(R.string.action_fail))
             }
     }
 
@@ -170,6 +172,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }) { t ->
                 logd("onError // OfflineQuota")
                 t.printStackTrace()
+                toast(getString(R.string.action_fail))
             }
     }
 

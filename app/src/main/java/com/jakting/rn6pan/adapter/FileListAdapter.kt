@@ -129,7 +129,7 @@ class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, pr
     private fun clickImage(playAdress: String, viewHolder: ViewHolder) {
         val transformType = TransformType.Transform_Default
         val indicatorType = IndicatorType.Indicator_Number
-        val screenOrientationType = ScreenOrientationType.Screenorientation_Default
+        val screenOrientationType = ScreenOrientationType.ScreenOrientation_Portrait
         val imageEngine: ImageEngine = GlideImageEngine()
         MNImageBrowser.with(parentContext)
             .setTransformType(transformType) //页面切换效果
@@ -187,48 +187,6 @@ class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, pr
                 fileOrDirectory.ctime
             )
     }
-
-//    private fun showDialogAskPreview() {
-//        val items = arrayOf(
-//            getString(R.string.file_sort_default),
-//            getString(R.string.file_sort_filename_asc)
-//        )
-//        MaterialAlertDialogBuilder(parentContext)
-//            .setTitle(resources.getString(R.string.file_sort_title))
-//            .setItems(items) { dialog, which ->
-//                when (which) {
-//                    0 -> { //恢复默认排序
-//                        defaultOrder = true
-//                        file_list_swipeLayout.autoRefresh()
-//                    }
-//                    1 -> { //按文件名正序
-//                        nameOrderBy = "asc"
-//                        orderFlag = 0
-//                        defaultOrder = false
-//                        file_list_swipeLayout.autoRefresh()
-//                    }
-//                    2 -> { //按文件名倒序
-//                        nameOrderBy = "desc"
-//                        orderFlag = 0
-//                        defaultOrder = false
-//                        file_list_swipeLayout.autoRefresh()
-//                    }
-//                    3 -> { //按创建时间正序
-//                        ctimeOrderBy = "asc"
-//                        orderFlag = 1
-//                        defaultOrder = false
-//                        file_list_swipeLayout.autoRefresh()
-//                    }
-//                    4 -> { //按创建时间倒序
-//                        ctimeOrderBy = "desc"
-//                        orderFlag = 1
-//                        defaultOrder = false
-//                        file_list_swipeLayout.autoRefresh()
-//                    }
-//                }
-//            }
-//            .show()
-//    }
 
     override fun getItemCount() = fileOrDirectoryList.size
 

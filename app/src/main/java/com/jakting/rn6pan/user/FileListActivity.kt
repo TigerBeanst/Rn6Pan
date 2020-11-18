@@ -1,21 +1,38 @@
 package com.jakting.rn6pan.user
 
+import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileOrDirectoryList
-import com.jakting.rn6pan.utils.*
+import com.jakting.rn6pan.utils.EncapsulateRetrofit
 import com.jakting.rn6pan.utils.MyApplication.Companion.ctimeOrderBy
 import com.jakting.rn6pan.utils.MyApplication.Companion.defaultOrder
 import com.jakting.rn6pan.utils.MyApplication.Companion.nameOrderBy
 import com.jakting.rn6pan.utils.MyApplication.Companion.orderFlag
 import com.jakting.rn6pan.utils.MyApplication.Companion.parentPathList
+import com.jakting.rn6pan.utils.isStringIllegal
+import com.jakting.rn6pan.utils.logd
+import com.jakting.rn6pan.utils.toast
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
+import kotlinx.android.synthetic.main.dialog_edittext.*
+import kotlinx.android.synthetic.main.file_fab_create_folder_layout.*
+import kotlinx.android.synthetic.main.file_fab_transmission_layout.*
+import kotlinx.android.synthetic.main.file_fab_upload_layout.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 
@@ -25,16 +42,19 @@ class FileListActivity : BaseActivity() {
     companion object {
         lateinit var nowFileOrDirectoryList: FileOrDirectoryList
         var isUpToParentPath = false
+        var isShowFabMenu = false
+        lateinit var showAnimation: Animation
+        lateinit var hideAnimation: Animation
+        lateinit var showMenuAnimation: Animation
+        lateinit var hideMenuAnimation: Animation
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_file_list)
         setSupportActionBar(findViewById(R.id.toolbar))
-        if (supportActionBar != null) {
-            supportActionBar!!.title = getString(R.string.file_toolbar_title)
-        }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        initFAB()
         initBottomBarNavIcon()
         //下拉刷新
         file_list_swipeLayout.apply {
@@ -51,6 +71,84 @@ class FileListActivity : BaseActivity() {
         }
     }
 
+    private fun initFAB() {
+        showAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_up)
+        hideAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_down)
+        showMenuAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_slide_in_from_left)
+        hideMenuAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_slide_in_from_right)
+        file_fab.setOnClickListener {
+            if (!isShowFabMenu) {
+                //还没显示菜单
+                showMenu()
+            } else {
+                //显示菜单了
+                hideMenu()
+            }
+        }
+        file_fab_upload_button.setOnClickListener { }
+        file_fab_create_folder_button.setOnClickListener {
+            val viewInflated: View = LayoutInflater.from(this)
+                .inflate(R.layout.dialog_edittext, dialog_layout as ViewGroup?, false)
+            val textInputLayout =
+                viewInflated.findViewById(R.id.dialog_textField) as TextInputLayout
+            val editInputLayout =
+                viewInflated.findViewById(R.id.dialog_editText) as TextInputEditText
+            textInputLayout.hint = getString(R.string.file_create_folder_dialog)
+            editInputLayout.isFocusable = true
+            editInputLayout.requestFocus()
+            MaterialAlertDialogBuilder(this)
+                .setTitle(resources.getString(R.string.file_create_folder))
+                .setView(viewInflated)
+                .setNegativeButton(resources.getString(R.string.cancel)) { _, _ ->
+                    // Respond to negative button press
+                }
+                .setPositiveButton(resources.getString(R.string.ok)) { dialog, _ ->
+                    val editString = editInputLayout.text.toString()
+                    if(isStringIllegal(editString)){
+                        toast(getString(R.string.file_create_folder_fail))
+                    }else{
+                        toast(getString(R.string.loading))
+                        createDirectory(editInputLayout.text.toString())
+                    }
+                }
+                .show()
+        }
+        file_fab_transmission_button.setOnClickListener { }
+    }
+
+    private fun showMenu() {
+        file_fab.startAnimation(showMenuAnimation)
+        file_fab.setImageDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.ic_baseline_close_24
+            )
+        )
+        file_fab_upload.startAnimation(showAnimation)
+        file_fab_create_folder.startAnimation(showAnimation)
+        file_fab_transmission.startAnimation(showAnimation)
+        file_fab_upload.visibility = View.VISIBLE
+        file_fab_create_folder.visibility = View.VISIBLE
+        file_fab_transmission.visibility = View.VISIBLE
+        isShowFabMenu = true
+    }
+
+    private fun hideMenu() {
+        file_fab.startAnimation(hideMenuAnimation)
+        file_fab.setImageDrawable(
+            ContextCompat.getDrawable(
+                this,
+                R.drawable.ic_baseline_add_24
+            )
+        )
+        file_fab_upload.startAnimation(hideAnimation)
+        file_fab_create_folder.startAnimation(hideAnimation)
+        file_fab_transmission.startAnimation(hideAnimation)
+        file_fab_upload.visibility = View.INVISIBLE
+        file_fab_create_folder.visibility = View.INVISIBLE
+        file_fab_transmission.visibility = View.INVISIBLE
+        isShowFabMenu = false
+    }
 
     private fun initFileOrDirectoryList() {
         val jsonForPost =
@@ -77,6 +175,31 @@ class FileListActivity : BaseActivity() {
             }) { t ->
                 logd("onError // getFileOrDirectoryList")
                 t.printStackTrace()
+                toast(getString(R.string.action_fail))
+            }
+    }
+
+    private fun createDirectory(newFolderName:String) {
+        val jsonForPost =
+            "{\"parent\":\"${nowFileOrDirectoryList.parent.identity}\"," +
+                    "\"path\":\"$newFolderName\"}"
+        val createDestinationPostBody =
+            RequestBody.create(
+                MediaType.parse("application/json"), jsonForPost
+            )
+        val observable =
+            EncapsulateRetrofit.init().createDirectory(createDestinationPostBody)
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ CreateDirectory ->
+                logd("onNext // createDirectory")
+                toast(getString(R.string.file_create_folder_success))
+                file_list_swipeLayout.autoRefresh()
+                hideMenu()
+            }) { t ->
+                logd("onError // createDirectory")
+                t.printStackTrace()
+                toast(getString(R.string.action_fail))
             }
     }
 
@@ -84,6 +207,15 @@ class FileListActivity : BaseActivity() {
         val layoutManager = LinearLayoutManager(this)
         file_list_recyclerView.layoutManager = layoutManager
         val adapter = FileListAdapter(nowFileOrDirectoryList.dataList, this)
+        if (parentPathList.size > 1) {
+            if (supportActionBar != null) {
+                supportActionBar!!.title = nowFileOrDirectoryList.parent.name
+            }
+        } else {
+            if (supportActionBar != null) {
+                supportActionBar!!.title = getString(R.string.file_toolbar_title)
+            }
+        }
         file_list_recyclerView.adapter = adapter
         file_list_swipeLayout.finishRefresh(0)
 
@@ -149,7 +281,7 @@ class FileListActivity : BaseActivity() {
         }
     }
 
-    private fun backToParentPath(){
+    private fun backToParentPath() {
         isUpToParentPath = true
         file_list_swipeLayout.autoRefresh()
     }

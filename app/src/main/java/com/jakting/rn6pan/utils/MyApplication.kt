@@ -3,6 +3,7 @@ package com.jakting.rn6pan.utils
 import android.app.Application
 import android.content.Context
 import com.jakting.rn6pan.api.data.UserInfo
+import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
 
 class MyApplication : Application() {
     override fun onCreate() {

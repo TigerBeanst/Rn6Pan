@@ -83,7 +83,7 @@
                         android:id="@+id/main_check_login_status_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/main_check_login_status_title"
+                        android:text="@string/loading"
                         android:textSize="18sp"
                         android:textAppearance="?attr/textAppearanceHeadline6"
                         android:textColor="@color/colorFont"

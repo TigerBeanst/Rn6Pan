@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">氡·6盘</string>
     <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="action_fail">操作失败，请检查网络</string>
+    <string name="loading">请稍等…</string>
 
     <!--main-->
     <string name="main_check_login_status_title">请稍等…</string>
@@ -34,8 +37,18 @@
     <string name="file_video_not_vip">无法播放</string>
     <string name="file_video_not_vip_desc">视频预览功能仅限订阅用户使用</string>
 
+    <string name="file_upload">上传文件</string>
+
+    <string name="file_create_folder">创建文件夹</string>
+    <string name="file_create_folder_dialog">文件夹名称</string>
+    <string name="file_create_folder_success">文件夹创建成功</string>
+    <string name="file_create_folder_fail">文件夹名称无效，请勿为空、全空格或包含英文冒号「:」</string>
+
+    <string name="file_transmission">传输列表</string>
+
     <string name="file_to_parent_folder">返回上个文件夹</string>
     <string name="file_to_parent_folder_toast">已经是根目录了</string>
+
     <string name="file_sort_title">排序方式</string>
     <string name="file_sort_default">恢复默认排序</string>
     <string name="file_sort_filename_asc">按文件名正序</string>

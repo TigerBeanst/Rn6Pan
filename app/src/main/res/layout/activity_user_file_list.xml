@@ -44,15 +44,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:menu="@menu/file_bottom_appbar"
         app:hideOnScroll="true"
-        app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24"
-        app:navigationContentDescription="@string/file_to_parent_folder"/>
+        app:menu="@menu/file_bottom_appbar"
+        app:navigationContentDescription="@string/file_to_parent_folder"
+        app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24" />
+
+    <LinearLayout
+        android:id="@+id/file_fab_menu_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="100dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <include layout="@layout/file_fab_upload_layout"/>
+        <include layout="@layout/file_fab_create_folder_layout"/>
+        <include layout="@layout/file_fab_transmission_layout"/>
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/file_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/file_upload"
+        app:backgroundTint="@color/colorAccent"
         app:layout_anchor="@id/bottomAppBar"
-        app:srcCompat="@drawable/ic_baseline_assignment_24"
-        android:contentDescription="TODO" />
+        app:srcCompat="@drawable/ic_baseline_add_24"
+        app:tint="@android:color/white" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

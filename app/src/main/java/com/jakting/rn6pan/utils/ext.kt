@@ -65,6 +65,10 @@ fun getPrintSize(size: Long): String? {
     }
 }
 
-fun getErrorString(t:Throwable): String {
-     return (t as HttpException).response()?.errorBody()?.string().let { return@let it.toString() }
+fun getErrorString(t: Throwable): String {
+    return (t as HttpException).response()?.errorBody()?.string().let { return@let it.toString() }
+}
+
+fun isStringIllegal(string: String): Boolean { //6盘专用
+    return (string.trim().isEmpty() || string.contains(":"))
 }

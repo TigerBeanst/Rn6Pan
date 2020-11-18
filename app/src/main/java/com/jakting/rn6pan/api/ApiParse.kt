@@ -38,6 +38,11 @@ interface ApiParse {
     @POST("newfile/list")
     fun getFileOrDirectoryList(@Body requestBody: RequestBody): Observable<FileOrDirectoryList>
 
+    //v3/21.新文件/010.创建文件夹.md
+    //新建文件夹
+    @POST("newfile")
+    fun createDirectory(@Body requestBody: RequestBody): Observable<FileOrDirectory>
+
     /*
         预览
      */

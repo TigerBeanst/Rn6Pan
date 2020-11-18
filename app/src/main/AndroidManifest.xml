@@ -22,6 +22,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".user.FileListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -30,6 +31,7 @@
             android:theme="@style/AppTheme.About" />
         <activity
             android:name=".utils.PlayerActivity"
+            android:screenOrientation="portrait"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             />
         <activity
