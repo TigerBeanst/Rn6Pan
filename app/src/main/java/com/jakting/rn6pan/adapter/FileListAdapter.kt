@@ -32,7 +32,10 @@ import okhttp3.RequestBody
 import java.text.SimpleDateFormat
 
 
-class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, private val activity:FileListActivity) :
+class FileListAdapter(
+    private val fileOrDirectoryList: List<FileOrDirectory>,
+    private val activity: FileListActivity
+) :
     RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
 
     companion object {
@@ -53,6 +56,7 @@ class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, pr
                 .inflate(R.layout.item_file_or_directory, parent, false)
         val viewHolder = ViewHolder(view)
         viewHolder.itemView.setOnClickListener {
+            if ((parentContext as FileListActivity).isShowFabMenu) (parentContext as FileListActivity).hideMenu()
             val position = viewHolder.adapterPosition
             val fileOrDirectory = fileOrDirectoryList[position]
             /*
@@ -66,8 +70,8 @@ class FileListAdapter(private val fileOrDirectoryList: List<FileOrDirectory>, pr
                 when {
                     fileOrDirectory.mime.contains("video") /*视频*/ -> {
                         if (userInfo.vip != 0) { //已订阅
-                            val intent = Intent(parentContext,PlayerActivity::class.java)
-                            intent.putExtra("identity",fileOrDirectory.identity)
+                            val intent = Intent(parentContext, PlayerActivity::class.java)
+                            intent.putExtra("identity", fileOrDirectory.identity)
                             parentContext.startActivity(intent)
                         } else { //未订阅
                             MaterialAlertDialogBuilder(parent.context)

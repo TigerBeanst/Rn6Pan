@@ -38,11 +38,11 @@ import okhttp3.RequestBody
 
 
 class FileListActivity : BaseActivity() {
+    var isShowFabMenu = false
 
     companion object {
         lateinit var nowFileOrDirectoryList: FileOrDirectoryList
         var isUpToParentPath = false
-        var isShowFabMenu = false
         lateinit var showAnimation: Animation
         lateinit var hideAnimation: Animation
         lateinit var showMenuAnimation: Animation
@@ -104,9 +104,9 @@ class FileListActivity : BaseActivity() {
                 }
                 .setPositiveButton(resources.getString(R.string.ok)) { dialog, _ ->
                     val editString = editInputLayout.text.toString()
-                    if(isStringIllegal(editString)){
+                    if (isStringIllegal(editString)) {
                         toast(getString(R.string.file_create_folder_fail))
-                    }else{
+                    } else {
                         toast(getString(R.string.loading))
                         createDirectory(editInputLayout.text.toString())
                     }
@@ -133,7 +133,7 @@ class FileListActivity : BaseActivity() {
         isShowFabMenu = true
     }
 
-    private fun hideMenu() {
+    fun hideMenu() {
         file_fab.startAnimation(hideMenuAnimation)
         file_fab.setImageDrawable(
             ContextCompat.getDrawable(
@@ -179,7 +179,7 @@ class FileListActivity : BaseActivity() {
             }
     }
 
-    private fun createDirectory(newFolderName:String) {
+    private fun createDirectory(newFolderName: String) {
         val jsonForPost =
             "{\"parent\":\"${nowFileOrDirectoryList.parent.identity}\"," +
                     "\"path\":\"$newFolderName\"}"
@@ -223,6 +223,7 @@ class FileListActivity : BaseActivity() {
 
     private fun initBottomBarNavIcon() {
         bottomAppBar.setOnMenuItemClickListener {
+            if (isShowFabMenu) hideMenu()
             when (it.itemId) {
                 R.id.menu_file_sort -> {
                     val items = arrayOf(
@@ -273,6 +274,7 @@ class FileListActivity : BaseActivity() {
             }
         }
         bottomAppBar.setNavigationOnClickListener {
+            if (isShowFabMenu) hideMenu()
             if (parentPathList.size == 1) {
                 toast(getString(R.string.file_to_parent_folder_toast))
             } else {
