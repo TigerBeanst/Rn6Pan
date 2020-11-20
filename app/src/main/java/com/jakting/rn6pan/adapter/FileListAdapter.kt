@@ -2,7 +2,6 @@ package com.jakting.rn6pan.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,25 +12,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.JsonParser
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.databinding.ItemFileOrDirectoryBinding
 import com.jakting.rn6pan.user.FileListActivity
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
-import com.jakting.rn6pan.utils.MyApplication.Companion.parentPathList
-import com.jakting.rn6pan.utils.MyApplication.Companion.userInfo
-import com.maning.imagebrowserlibrary.ImageEngine
-import com.maning.imagebrowserlibrary.MNImageBrowser
-import com.maning.imagebrowserlibrary.model.ImageBrowserConfig.*
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_user_file_list.*
 import kotlinx.android.synthetic.main.content_file_info.view.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import java.text.SimpleDateFormat
 
 
@@ -42,15 +29,13 @@ class FileListAdapter(
     RecyclerView.Adapter<FileListAdapter.ViewHolder>() {
     lateinit var parentContext: Context
     lateinit var mListener: ItemListener
-    var mSwitch: ObservableBoolean
-    private var mBooleanList: ArrayList<ObservableBoolean> = ArrayList()
-    var postionLongPress = 0
+    var mSwitch: ObservableBoolean = ObservableBoolean(false)
+    var mBooleanList: ArrayList<ObservableBoolean> = ArrayList()
 
     init {
         for (i in fileOrDirectoryList.indices) {
             mBooleanList.add(ObservableBoolean(false))
         }
-        mSwitch = ObservableBoolean(false)
     }
 
 
@@ -83,112 +68,114 @@ class FileListAdapter(
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_file_or_directory, parent, false)
         val viewHolder = ViewHolder(view)
-        viewHolder.itemView.setOnClickListener {
-            if ((parentContext as FileListActivity).isShowFabMenu) (parentContext as FileListActivity).hideMenu()
-            val position = viewHolder.adapterPosition
-            val fileOrDirectory = fileOrDirectoryList[position]
-            /*
-                ===============文件夹==============
-             */
-            if (fileOrDirectory.directory) {
-                parentPathList.add(fileOrDirectory.path)
-                activity.file_list_swipeLayout.autoRefresh()
-
-            } else {
-                when {
-                    fileOrDirectory.mime.contains("video") /*视频*/ -> {
-                        if (userInfo.vip != 0) { //已订阅
-                            val intent = Intent(parentContext, PlayerActivity::class.java)
-                            intent.putExtra("identity", fileOrDirectory.identity)
-                            parentContext.startActivity(intent)
-                        } else { //未订阅
-                            MaterialAlertDialogBuilder(parent.context)
-                                .setTitle(parent.context.getString(R.string.file_video_not_vip))
-                                .setMessage(parent.context.getString(R.string.file_video_not_vip_desc))
-                                .setPositiveButton(parent.context.getString(R.string.ok)) { _, _ -> }
-                                .show()
-                        }
-                    }
-                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
-                        getImagePreviewURL(fileOrDirectory.identity, viewHolder)
-                    }
-                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
-
-                    }
-                }
-            }
+//        viewHolder.itemView.setOnClickListener {
+//            if ((parentContext as FileListActivity).isShowFabMenu) (parentContext as FileListActivity).hideMenu()
+//            val position = viewHolder.adapterPosition
+//            val fileOrDirectory = fileOrDirectoryList[position]
+//            /*
+//                ===============文件夹==============
+//             */
+//            if (fileOrDirectory.directory) {
+//                parentPathList.add(fileOrDirectory.path)
+//                activity.file_list_swipeLayout.autoRefresh()
+//
+//            } else {
+//                when {
+//                    fileOrDirectory.mime.contains("video") /*视频*/ -> {
+//                        if (userInfo.vip != 0) { //已订阅
+//                            val intent = Intent(parentContext, PlayerActivity::class.java)
+//                            intent.putExtra("identity", fileOrDirectory.identity)
+//                            parentContext.startActivity(intent)
+//                        } else { //未订阅
+//                            MaterialAlertDialogBuilder(parent.context)
+//                                .setTitle(parent.context.getString(R.string.file_video_not_vip))
+//                                .setMessage(parent.context.getString(R.string.file_video_not_vip_desc))
+//                                .setPositiveButton(parent.context.getString(R.string.ok)) { _, _ -> }
+//                                .show()
+//                        }
+//                    }
+//                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
+//                        getImagePreviewURL(fileOrDirectory.identity, viewHolder)
+//                    }
+//                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
+//
+//                    }
+//                }
+//            }
 //            viewHolder.itemView.setOnLongClickListener {
 //                val position = viewHolder.adapterPosition
 //                val fileOrDirectory = fileOrDirectoryList[position]
 //                showBottomDialog(fileOrDirectory, parent)
 //                true
 //            }
-        }
+//        }
         return viewHolder
     }
 
-    private fun getImagePreviewURL(
-        identity: String,
-        viewHolder: ViewHolder
-    ) {
-        val jsonForPost = "{\"identity\":\"$identity\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().getImagePreview(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ picturePreview ->
-                logd("onNext // getImagePreview")
-                clickImage(picturePreview.playAddress, viewHolder)
-            }) { t ->
-                logd("onError // getImagePreview")
-                val errorString: String = getErrorString(t)
-                logd(errorString)
-                val errorJsonObject = JsonParser().parse(errorString).asJsonObject
-                if (!errorJsonObject.get("success").asBoolean) {
-                    MaterialAlertDialogBuilder(parentContext)
-                        .setTitle(parentContext.getString(R.string.file_image_not_preview))
-                        .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
-                        .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
-                        .show()
-                }
-            }
-    }
-
-    private fun clickImage(playAdress: String, viewHolder: ViewHolder) {
-        val transformType = TransformType.Transform_Default
-        val indicatorType = IndicatorType.Indicator_Number
-        val screenOrientationType = ScreenOrientationType.ScreenOrientation_Portrait
-        val imageEngine: ImageEngine = GlideImageEngine()
-        MNImageBrowser.with(parentContext)
-            .setTransformType(transformType) //页面切换效果
-            .setIndicatorType(indicatorType) //指示器效果
-            .setIndicatorHide(false) //设置隐藏指示器
-            .setCurrentPosition(1) //当前位置
-            .setImageEngine(imageEngine) //图片引擎
-            .setImageUrl(playAdress) //图片集合
-            .setScreenOrientationType(screenOrientationType) //方向设置
-            .setOnClickListener { activity, view, position, url ->
-
-            }
-            .setOnLongClickListener { activity, view, position, url ->
-
-            }
-            .setFullScreenMode(false) //打开动画
-            .show(viewHolder.fileOrDirectoryImagePreview)
-    }
+//    private fun getImagePreviewURL(
+//        identity: String,
+//        viewHolder: ViewHolder
+//    ) {
+//        val jsonForPost = "{\"identity\":\"$identity\"}"
+//        val createDestinationPostBody =
+//            RequestBody.create(
+//                MediaType.parse("application/json"), jsonForPost
+//            )
+//        val observable =
+//            EncapsulateRetrofit.init().getImagePreview(createDestinationPostBody)
+//        observable.subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({ picturePreview ->
+//                logd("onNext // getImagePreview")
+//                clickImage(picturePreview.playAddress, viewHolder)
+//            }) { t ->
+//                logd("onError // getImagePreview")
+//                val errorString: String = getErrorString(t)
+//                logd(errorString)
+//                val errorJsonObject = JsonParser().parse(errorString).asJsonObject
+//                if (!errorJsonObject.get("success").asBoolean) {
+//                    MaterialAlertDialogBuilder(parentContext)
+//                        .setTitle(parentContext.getString(R.string.file_image_not_preview))
+//                        .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
+//                        .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
+//                        .show()
+//                }
+//            }
+//    }
+//
+//    private fun clickImage(playAdress: String, viewHolder: ViewHolder) {
+//        val transformType = TransformType.Transform_Default
+//        val indicatorType = IndicatorType.Indicator_Number
+//        val screenOrientationType = ScreenOrientationType.ScreenOrientation_Portrait
+//        val imageEngine: ImageEngine = GlideImageEngine()
+//        MNImageBrowser.with(parentContext)
+//            .setTransformType(transformType) //页面切换效果
+//            .setIndicatorType(indicatorType) //指示器效果
+//            .setIndicatorHide(false) //设置隐藏指示器
+//            .setCurrentPosition(1) //当前位置
+//            .setImageEngine(imageEngine) //图片引擎
+//            .setImageUrl(playAdress) //图片集合
+//            .setScreenOrientationType(screenOrientationType) //方向设置
+//            .setOnClickListener { activity, view, position, url ->
+//
+//            }
+//            .setOnLongClickListener { activity, view, position, url ->
+//
+//            }
+//            .setFullScreenMode(false) //打开动画
+//            .show(viewHolder.fileOrDirectoryImagePreview)
+//    }
 
 
     @SuppressLint("SimpleDateFormat")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
+        val fileOrDirectory = fileOrDirectoryList[position]
+        holder.itemView.setTag(R.id.item_position,position)
+        holder.itemView.setTag(R.id.item_fileOrDirectory,fileOrDirectory)
+        holder.itemView.setTag(R.id.item_viewholder,holder)
         holder.mBinding.visible = mSwitch
         holder.mBinding.checked = mBooleanList[position]
         holder.mBinding.listener = mListener
-        val fileOrDirectory = fileOrDirectoryList[position]
         if (fileOrDirectory.directory) {
             holder.fileOrDirectoryIcon.setImageDrawable(
                 ContextCompat.getDrawable(appContext, R.drawable.file_icon_directory)
