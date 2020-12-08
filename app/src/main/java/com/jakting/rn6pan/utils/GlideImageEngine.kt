@@ -27,7 +27,7 @@ class GlideImageEngine : ImageEngine {
             .load(url)
             .apply(
                 RequestOptions().fitCenter().error(R.mipmap.ic_launcher)
-                    .placeholder(R.drawable.default_placeholder)
+                    .placeholder(R.drawable.placeholder_loading)
             )
             .listener(object : RequestListener<Bitmap?> {
                 override fun onLoadFailed(

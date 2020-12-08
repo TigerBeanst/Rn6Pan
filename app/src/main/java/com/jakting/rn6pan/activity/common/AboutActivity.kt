@@ -1,12 +1,13 @@
-package com.jakting.rn6pan
+package com.jakting.rn6pan.activity.common
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.drakeet.about.*
+import com.jakting.rn6pan.BuildConfig
+import com.jakting.rn6pan.R
 
 
 class AboutActivity : AbsAboutActivity() {

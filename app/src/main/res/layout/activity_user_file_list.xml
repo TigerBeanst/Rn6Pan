@@ -23,8 +23,12 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorBackground"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
-        </com.google.android.material.appbar.AppBarLayout>
 
+        </com.google.android.material.appbar.AppBarLayout>
+        <ViewStub
+            android:id="@+id/cab_stub"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize" />
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/file_list_swipeLayout"
             android:layout_width="match_parent"

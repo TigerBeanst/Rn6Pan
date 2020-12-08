@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
         <item name="actionBarStyle">@style/Widget.MaterialComponents.ActionBar.Surface</item>
         <item name="actionBarTheme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="windowActionModeOverlay">true</item>
@@ -13,6 +14,8 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorBackground</item>
+
+        <item name="actionModeCloseDrawable">@drawable/ic_baseline_close_24</item>
     </style>
 
     <style name="AppTheme.About" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -20,6 +23,13 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="aboutPageHeaderBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="AppTheme.FullScreen" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
 </resources>

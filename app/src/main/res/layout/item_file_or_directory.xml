@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:onClick="@{listener::onClick}"
         android:onLongClick="@{listener::onLongClick}"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
         android:paddingStart="20dp"
         android:paddingTop="10dp"
@@ -38,12 +39,14 @@
             android:id="@+id/file_list_fileicon"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:clickable="false"
             android:src="@drawable/file_icon_unknown"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:clickable="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical">
@@ -89,7 +92,18 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:checked="@={checked}"
-                android:visibility="@{visible?View.VISIBLE:View.GONE}" />
+                android:visibility="@{visible?View.VISIBLE:View.GONE, default=gone}" />
+
+            <ImageButton
+                android:id="@+id/file_list_more"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:layout_gravity="center"
+                android:tint="?android:attr/colorControlNormal"
+                android:contentDescription="@string/file_more"
+                android:visibility="@{visible?View.GONE:View.VISIBLE, default=visible}" />
 
         </LinearLayout>
 

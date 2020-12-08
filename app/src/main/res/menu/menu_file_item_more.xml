@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_file_more_download"
+        android:contentDescription="@string/file_more_download"
+        android:title="@string/file_more_download"/>
+    <item android:id="@+id/menu_file_more_download_to"
+        android:contentDescription="@string/file_more_download_to"
+        android:title="@string/file_more_download_to"/>
+    <item android:id="@+id/menu_file_more_copy"
+        android:contentDescription="@string/file_more_copy"
+        android:title="@string/file_more_copy"/>
+    <item android:id="@+id/menu_file_more_move"
+        android:contentDescription="@string/file_more_move"
+        android:title="@string/file_more_move"/>
+    <item android:id="@+id/menu_file_more_rename"
+        android:contentDescription="@string/file_more_rename"
+        android:title="@string/file_more_rename"/>
+    <item android:id="@+id/menu_file_more_star"
+        android:contentDescription="@string/file_more_star"
+        android:title="@string/file_more_star"/>
+    <item android:id="@+id/menu_file_more_delete"
+        android:contentDescription="@string/file_more_delete"
+        android:title="@string/file_more_delete"/>
+</menu>

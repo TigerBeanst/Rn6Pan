@@ -2,18 +2,19 @@ package com.jakting.rn6pan.utils
 
 import android.content.Context
 import android.content.Intent
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.view.ActionMode
 import androidx.databinding.ObservableBoolean
+import com.afollestad.materialcab.attached.isActive
+import com.afollestad.materialcab.attached.isDestroyed
+import com.afollestad.materialcab.createCab
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.JsonParser
 import com.jakting.rn6pan.R
+import com.jakting.rn6pan.activity.player.PlayerActivity
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileOrDirectory
-import com.jakting.rn6pan.user.FileListActivity
+import com.jakting.rn6pan.activity.user.FileListActivity
 import com.maning.imagebrowserlibrary.ImageEngine
 import com.maning.imagebrowserlibrary.MNImageBrowser
 import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
@@ -28,42 +29,17 @@ interface ItemListener {
     fun onLongClick(v: View): Boolean
 }
 
-class Presenter(var context: Context) : ActionMode.Callback, ItemListener {
+class Presenter(var context: Context) : ItemListener {
     private var mActionMode: ActionMode? = null
-
-    override fun onCreateActionMode(mode: ActionMode, menu: Menu?): Boolean {
-        val menuInflater = MenuInflater(context)
-        menuInflater.inflate(R.menu.menu_file_list_multi, menu)
-//        (context as FileListActivity).adapter.startActionMode()
-        mActionMode = mode
-        return true
-    }
-
-    override fun onPrepareActionMode(mode: ActionMode, menu: Menu?): Boolean {
-        return false
-    }
-
-    override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-        when (item.itemId) {
-//            R.id.delete -> mAdapter.deleteItems()
-//            R.id.select_all -> mAdapter.selectAll()
-            else -> {
-            }
-        }
-        return false
-    }
-
-    override fun onDestroyActionMode(mode: ActionMode) {
-        (context as FileListActivity).adapter.stopActionMode()
-        mActionMode = null
-    }
+    private val obTrue = ObservableBoolean(true)
+    private val obFalse = ObservableBoolean(false)
 
     override fun onClick(v: View) {
         val parentContext = v.context as FileListActivity
         val position = v.getTag(R.id.item_position) as Int
         val fileOrDirectory = v.getTag(R.id.item_fileOrDirectory) as FileOrDirectory
         val viewHolder = v.getTag(R.id.item_viewholder) as FileListAdapter.ViewHolder
-        if (mActionMode == null) {
+        if (parentContext.cab.isDestroyed()) {
             //没有长按
             if (parentContext.isShowFabMenu) parentContext.hideMenu()
             /*
@@ -94,31 +70,60 @@ class Presenter(var context: Context) : ActionMode.Callback, ItemListener {
                     fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
 
                     }
+                    else -> {
+                        MaterialAlertDialogBuilder(parentContext)
+                            .setTitle(parentContext.getString(R.string.file_file_not_preview))
+                            .setMessage(
+                                String.format(
+                                    parentContext.getString(R.string.file_file_not_preview_desc),
+                                    fileOrDirectory.mime
+                                )
+                            )
+                            .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
+                            .show()
+                    }
                 }
             }
         } else {
             //长按了
 //            (context as FileListActivity).adapter.mBooleanList[position] = ObservableBoolean(true)
-
-            val obTrue = ObservableBoolean(true)
-            val obFalse = ObservableBoolean(false)
+            logd("当前这条是：${viewHolder.mBinding.checked?.get()}，文件名 ${viewHolder.fileOrDirectoryName}")
             viewHolder.mBinding.checked =
-                if (viewHolder.mBinding.checked == obTrue) obFalse else obTrue
+                if (viewHolder.mBinding.checked?.get() == true) obFalse else obTrue
+            logd("点了之后是：${viewHolder.mBinding.checked?.get()}，文件名 ${viewHolder.fileOrDirectoryName}")
 //            (context as FileListActivity).adapter.mBooleanList[position] = viewHolder.mBinding.checked as ObservableBoolean
         }
 
     }
 
     override fun onLongClick(v: View): Boolean {
-        (context as FileListActivity).adapter.mSwitch.set(true)
+        if (mActionMode != null) {
+            return false
+        }
+        (context as FileListActivity).adapter.startActionMode()
         val parentContext = v.context as FileListActivity
         val position = v.getTag(R.id.item_position) as Int
         val fileOrDirectory = v.getTag(R.id.item_fileOrDirectory) as FileOrDirectory
         val viewHolder = v.getTag(R.id.item_viewholder) as FileListAdapter.ViewHolder
-        if (mActionMode != null) {
-            return false;
+        viewHolder.mBinding.checked = obTrue
+//        mActionMode = (context as FileListActivity).startSupportActionMode(this)
+        parentContext.cab = parentContext.createCab(R.id.cab_stub) {
+            title(R.string.app_name)
+            menu(R.menu.menu_file_list_multi)
+            backgroundColor(R.color.colorBackground)
+            popupTheme(R.style.ThemeOverlay_AppCompat_DayNight_ActionBar)
+            titleColor(R.color.colorFileFont)
+            fadeIn()
+            onCreate { cab, menu ->
+                parentContext.supportActionBar?.hide()
+            }
+            onDestroy {
+//                fadeIn()
+                parentContext.supportActionBar?.show()
+                (context as FileListActivity).adapter.stopActionMode()
+                true
+            }
         }
-        mActionMode = (context as FileListActivity).startSupportActionMode(this)
         viewHolder.mBinding.checked = ObservableBoolean(true)
         return true
     }

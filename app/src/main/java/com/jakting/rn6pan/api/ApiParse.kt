@@ -3,8 +3,7 @@ package com.jakting.rn6pan.api
 import com.jakting.rn6pan.api.data.*
 import io.reactivex.rxjava3.core.Observable
 import okhttp3.RequestBody
-import retrofit2.http.Body
-import retrofit2.http.POST
+import retrofit2.http.*
 
 
 interface ApiParse {
@@ -42,6 +41,16 @@ interface ApiParse {
     //新建文件夹
     @POST("newfile")
     fun createDirectory(@Body requestBody: RequestBody): Observable<FileOrDirectory>
+
+    //v3/21.新文件/080.文件星标管理.md
+    //列出现有星标列表
+    @GET("labels?skip=0&limit=9007199254740991")
+    fun getLabelsList(): Observable<FileLabelList>
+
+    //v3/21.新文件/080.文件星标管理.md
+    //列出现有星标列表
+    @PUT("labels/{identity}")
+    fun modifyLabelName(@Body requestBody: RequestBody, @Path("identity") identity:Int): Observable<FileLabel>
 
     /*
         预览

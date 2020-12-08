@@ -6,6 +6,7 @@
     <string name="loading">请稍等…</string>
 
     <!--main-->
+    <string name="main_refresh">刷新</string>
     <string name="main_check_login_status_title">请稍等…</string>
     <string name="main_check_login_status_second_title">检查登录状态中……</string>
     <string name="main_check_login_status_title_error">您尚未登录</string>
@@ -20,6 +21,7 @@
     <string name="main_offline_download_second_title">（未知配额）</string>
 
     <string name="main_ticket_title">工单</string>
+    <string name="main_setting_title">设置</string>
     <string name="main_about_title">关于</string>
 
     <!--login-->
@@ -29,12 +31,16 @@
     <string name="user_toolbar_title">个人信息</string>
 
     <!--file-->
+    <string name="file_more">更多</string>
     <string name="file_toolbar_title">文件管理</string>
     <string name="file_one_label_filename">文件</string>
     <string name="file_one_label_size">大小</string>
+    <string name="file_file_not_preview">无法预览</string>
+    <string name="file_file_not_preview_desc">此文件的 MIME 为 %s，暂不支持预览，请下载后查看。\n（注：并非拥有视频/图片文件后缀就能预览）</string>
     <string name="file_image_not_preview">无法预览</string>
-    <string name="file_image_not_preview_desc">此图片暂无法预览，请下载后查看</string>
     <string name="file_video_not_vip">无法播放</string>
+    <string name="file_image_not_preview_desc">此图片暂无法预览，请下载后查看</string>
+    <string name="file_video_not_preview_desc">此视频暂无法预览，请下载后查看</string>
     <string name="file_video_not_vip_desc">视频预览功能仅限订阅用户使用</string>
 
     <string name="file_upload">上传文件</string>
@@ -56,10 +62,57 @@
     <string name="file_sort_ctime_asc">按创建时间正序</string>
     <string name="file_sort_ctime_desc">按创建时间倒序</string>
 
+    <string name="file_more_download">下载</string>
+    <string name="file_more_download_to">下载至</string>
+    <string name="file_more_copy">复制</string>
+    <string name="file_more_move">移动</string>
+    <string name="file_more_rename">重命名</string>
+    <string name="file_more_star">星标</string>
+    <string name="file_more_delete">删除</string>
+
+
+    <string name="file_toolbar_star">星标</string>
+    <string name="file_toolbar_star_filter">星标筛选（长按编辑）</string>
+    <string name="file_toolbar_star_filter_clear">清除筛选</string>
+    <string name="file_toolbar_star_filter_add">新增</string>
+    <string name="file_toolbar_star_filter_modify">编辑（仅支持修改名称）</string>
+    <string name="file_toolbar_star_filter_modify_name">星标名称</string>
+    <string name="file_toolbar_star_filter_modify_name_success">修改星标名称成功</string>
+    <string name="file_toolbar_star_filter_modify_name_fail">星标名称为空或不合法</string>
+
+    <!--setting-->
+    <string name="setting_toolbar_title">设置</string>
+    <string name="setting_video_title">视频</string>
+    <string name="setting_video_clear_cache">清除缓存</string>
+    <string name="setting_video_clear_cache_desc">清除视频预览过程中产生的缓存</string>
+    <string name="setting_misc_title">杂项</string>
+    <string name="setting_misc_show_guide">重置向导</string>
+    <string name="setting_misc_show_guide_desc">重新在文件列表展示各按钮的功能</string>
+    <string name="setting_misc_show_guide_toast">重置操作已完成</string>
+
     <!--about-->
     <string name="about_page_info">介绍</string>
     <string name="about_page_info_desc">就是一个第三方的6盘客户端而已</string>
     <string name="about_page_dev">开发者</string>
     <string name="about_page_dev_1">氡·6盘 开发者</string>
     <string name="about_page_open_source">开放源代码许可</string>
+
+    <!--player-->
+    <string name="player_change_play_speed">播放速度(%.2fx)</string>
+    <string name="player_change_rotate">旋转画面</string>
+    <string name="player_ratio_default">默认比例</string>
+    <string name="player_ratio_16_9" translatable="false">16:9</string>
+    <string name="player_ratio_4_3" translatable="false">4:3</string>
+    <string name="player_ratio_full">全屏</string>
+    <string name="player_ratio_truly_full">拉伸全屏</string>
+
+    <!--spotlight-->
+    <string name="spotlight_next">下个提示</string>
+    <string name="spotlight_done">明白了</string>
+    <string name="spotlight_backToParentTarget_title">返回上级</string>
+    <string name="spotlight_backToParentTarget_content">点击此处可以返回到上级文件夹</string>
+    <string name="spotlight_fabTarget_title">浮动按钮</string>
+    <string name="spotlight_fabTarget_content">点击此处可以唤出上传文件、创建文件夹和传输列表</string>
+    <string name="spotlight_sortTarget_title">文件排序</string>
+    <string name="spotlight_sortTarget_content">点击此处可以根据需要变换文件排序方式</string>
 </resources>

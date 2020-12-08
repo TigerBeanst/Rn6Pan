@@ -1,6 +1,5 @@
-package com.jakting.rn6pan.user
+package com.jakting.rn6pan.activity.user
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R

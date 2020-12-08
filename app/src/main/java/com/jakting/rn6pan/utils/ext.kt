@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
+import com.jakting.rn6pan.api.data.FileLabelItem
 import retrofit2.HttpException
 import java.math.BigDecimal
 
@@ -72,3 +73,4 @@ fun getErrorString(t: Throwable): String {
 fun isStringIllegal(string: String): Boolean { //6盘专用
     return (string.trim().isEmpty() || string.contains(":"))
 }
+

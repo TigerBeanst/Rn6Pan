@@ -3,14 +3,18 @@ package com.jakting.rn6pan
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
-import com.jakting.rn6pan.user.FileListActivity
-import com.jakting.rn6pan.user.LoginActivity
-import com.jakting.rn6pan.user.UserActivity
+import com.jakting.rn6pan.activity.common.AboutActivity
+import com.jakting.rn6pan.activity.common.SettingsActivity
+import com.jakting.rn6pan.activity.user.FileListActivity
+import com.jakting.rn6pan.activity.user.LoginActivity
+import com.jakting.rn6pan.activity.user.UserActivity
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.CookiesUtils.Companion.saveCookie
 import com.jakting.rn6pan.utils.MyApplication.Companion.COOKIES
@@ -36,6 +40,20 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             )
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_main_refresh->{
+                getUserInfo()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,6 +67,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         main_file_manager_card.setOnClickListener(this)
         main_offline_download_card.setOnClickListener(this)
         main_ticket_layout.setOnClickListener(this)
+        main_setting_layout.setOnClickListener(this)
         main_about_layout.setOnClickListener(this)
     }
 
@@ -199,8 +218,12 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             main_ticket_layout->{
 
             }
+            main_setting_layout->{
+                val intent = Intent(this, SettingsActivity::class.java)
+                startActivity(intent)
+            }
             main_about_layout->{
-                val intent = Intent(this,AboutActivity::class.java)
+                val intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
             }
         }

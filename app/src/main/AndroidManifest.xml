@@ -13,25 +13,31 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".user.UserActivity"
+            android:name=".activity.user.UserActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.LoginActivity"
+            android:name=".activity.user.LoginActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.FileListActivity"
+            android:name=".activity.user.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".AboutActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.About" />
+            android:parentActivityName=".MainActivity" />
         <activity
-            android:name=".utils.PlayerActivity"
+            android:name=".activity.common.SettingsActivity"
             android:screenOrientation="portrait"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activity.common.AboutActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.About"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".activity.player.PlayerActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.FullScreen"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             />
         <activity

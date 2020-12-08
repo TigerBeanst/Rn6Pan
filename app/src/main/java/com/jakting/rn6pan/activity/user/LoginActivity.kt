@@ -1,10 +1,9 @@
-package com.jakting.rn6pan.user
+package com.jakting.rn6pan.activity.user
 
 import android.os.Bundle
 import android.webkit.CookieManager
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.ACCOUNT_NUDE_URL
