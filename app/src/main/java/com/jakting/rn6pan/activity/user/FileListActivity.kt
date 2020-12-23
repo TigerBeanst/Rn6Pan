@@ -403,6 +403,24 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .build()
         targets.add(fabTarget)
 
+        val tranTarget = Target.Builder()
+            .setAnchor(findViewById<View>(R.id.menu_file_transmission))
+            .setShape(Circle(100f))
+            .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
+            .setOverlay(targetlayout)
+            .setOnTargetListener(object : OnTargetListener {
+                override fun onStarted() {
+                    targetlayout.spotlight_title.text =
+                        getString(R.string.spotlight_transmission_title)
+                    targetlayout.spotlight_content.text =
+                        getString(R.string.spotlight_transmission_content)
+                }
+
+                override fun onEnded() {}
+            })
+            .build()
+        targets.add(tranTarget)
+
         val sortTarget = Target.Builder()
             .setAnchor(findViewById<View>(R.id.menu_file_sort))
             .setShape(Circle(100f))

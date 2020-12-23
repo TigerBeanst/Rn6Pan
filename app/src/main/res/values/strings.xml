@@ -133,7 +133,9 @@
     <string name="spotlight_backToParentTarget_title">返回上级</string>
     <string name="spotlight_backToParentTarget_content">点击此处可以返回到上级文件夹</string>
     <string name="spotlight_fabTarget_title">浮动按钮</string>
-    <string name="spotlight_fabTarget_content">点击此处可以唤出上传文件、创建文件夹和传输列表</string>
+    <string name="spotlight_fabTarget_content">点击此处可以唤出上传文件和创建文件夹</string>
+    <string name="spotlight_transmission_title">传输列表</string>
+    <string name="spotlight_transmission_content">点击此处可以进入下载列表</string>
     <string name="spotlight_sortTarget_title">文件排序</string>
     <string name="spotlight_sortTarget_content">点击此处可以根据需要变换文件排序方式</string>
 </resources>
