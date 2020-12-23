@@ -4,12 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.BuildConfig
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.MyApplication.Companion.settingSharedPreferencesEditor
 import com.jakting.rn6pan.utils.toast
-import moe.shizuku.preference.*
 
 
 class SettingsActivity : BaseActivity() {
@@ -33,21 +34,18 @@ class SettingsActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
-    internal class SettingsFragment : PreferenceFragment(),
+    internal class SettingsFragment : PreferenceFragmentCompat(),
         OnSharedPreferenceChangeListener, Preference.OnPreferenceChangeListener {
         override fun onCreatePreferences(bundle: Bundle?, s: String?) {
-            preferenceManager.defaultPackages = arrayOf(BuildConfig.APPLICATION_ID + ".")
-            preferenceManager.sharedPreferencesName = "settings"
-            preferenceManager.sharedPreferencesMode = Context.MODE_PRIVATE
             setPreferencesFromResource(R.xml.settings, null)
 
-            val clearCachePreferences = findPreference("click_video_clear_cache")
-            clearCachePreferences.setOnPreferenceClickListener {
+            val clearCachePreferences:Preference? =  findPreference("click_video_clear_cache")
+            clearCachePreferences?.setOnPreferenceClickListener {
                 false
             }
 
-            val showGuidePreferences = findPreference("click_misc_show_guide")
-            showGuidePreferences.setOnPreferenceClickListener {
+            val showGuidePreferences:Preference? = findPreference("click_misc_show_guide")
+            showGuidePreferences?.setOnPreferenceClickListener {
                 settingSharedPreferencesEditor.putBoolean("first_run", true)
                 settingSharedPreferencesEditor.apply()
                 toast(getString(R.string.setting_misc_show_guide_toast))
@@ -65,11 +63,6 @@ class SettingsActivity : BaseActivity() {
 //                langPreference.setValueIndex(0)
 //            }
 //            langPreference.onPreferenceChangeListener = this
-        }
-
-        override fun onCreateItemDecoration(): DividerDecoration {
-            return CategoryDivideDividerDecoration()
-            //return new DefaultDividerDecoration();
         }
 
         override fun onPause() {

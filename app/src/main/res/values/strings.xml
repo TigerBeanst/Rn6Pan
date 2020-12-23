@@ -7,6 +7,7 @@
 
     <!--main-->
     <string name="main_refresh">刷新</string>
+    <string name="main_refresh_success">刷新完成</string>
     <string name="main_check_login_status_title">请稍等…</string>
     <string name="main_check_login_status_second_title">检查登录状态中……</string>
     <string name="main_check_login_status_title_error">您尚未登录</string>
@@ -70,6 +71,17 @@
     <string name="file_more_star">星标</string>
     <string name="file_more_delete">删除</string>
 
+    <string name="file_more_rename_filename">文件名</string>
+    <string name="file_more_rename_directoryname">文件夹名</string>
+    <string name="file_more_rename_success_file">重命名文件成功</string>
+    <string name="file_more_rename_success_directory">重命名文件夹成功</string>
+    <string name="file_more_rename_fail">文件夹名称无效，请勿为空、全空格或与原名称相同</string>
+    <string name="file_more_star_title">标记星标</string>
+    <string name="file_more_star_clear">清除星标</string>
+    <string name="file_more_star_set_success">设置星标成功</string>
+    <string name="file_more_star_remove_success">移除星标成功</string>
+    <string name="file_more_star_now">（当前）</string>
+
 
     <string name="file_toolbar_star">星标</string>
     <string name="file_toolbar_star_filter">星标筛选（长按编辑）</string>
@@ -79,6 +91,15 @@
     <string name="file_toolbar_star_filter_modify_name">星标名称</string>
     <string name="file_toolbar_star_filter_modify_name_success">修改星标名称成功</string>
     <string name="file_toolbar_star_filter_modify_name_fail">星标名称为空或不合法</string>
+    <string name="file_toolbar_star_add_title">创建星标</string>
+    <string name="file_toolbar_star_add_color">选择颜色</string>
+    <string name="file_toolbar_star_add_name">星标名称</string>
+    <string name="file_toolbar_star_add_success">创建星标成功</string>
+    <string name="file_toolbar_star_add_fail">创建星标失败，可能已存在同颜色星标</string>
+    <string name="file_toolbar_star_add_fail_server">创建星标失败，颜色异常。请确认是否选择了颜色并保证不为纯黑或纯白</string>
+    <string name="file_toolbar_star_delete">删除</string>
+    <string name="file_toolbar_star_delete_msg">您确定要删除此星标吗？如果当前存在使用此星标的文件或文件夹，它们将会恢复为未标记状态。</string>
+    <string name="file_toolbar_star_delete_success">删除星标成功</string>
 
     <!--setting-->
     <string name="setting_toolbar_title">设置</string>

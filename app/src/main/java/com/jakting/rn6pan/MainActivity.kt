@@ -46,9 +46,9 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.menu_main_refresh->{
-                getUserInfo()
+        when (item.itemId) {
+            R.id.menu_main_refresh -> {
+                getUserInfo(true)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -58,7 +58,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-        getUserInfo()
+        getUserInfo(false)
         init()
     }
 
@@ -72,7 +72,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
-    private fun getUserInfo() {
+    private fun getUserInfo(isPressRefresh: Boolean) {
         val observable = EncapsulateRetrofit.init().getUserInfo(createDestinationPostBody)
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -119,7 +119,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                             )) else getString(R.string.main_check_login_status_sub_expires)
                 main_file_manager_second_title.text =
                     "配额（" + getPrintSize(userInfo.spaceUsed) + "/" + getPrintSize(userInfo.spaceCapacity) + "）"
-                getOfflineQuota()
+                getOfflineQuota(isPressRefresh)
             }) { t ->
                 logd("onError // getUserInfo")
                 t.printStackTrace()
@@ -170,7 +170,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                     LOGIN_STATUS = 1
                     STATE = checkDestination.state
                     TOKEN = checkDestination.token
-                    getUserInfo()
+                    getUserInfo(false)
                 }
             }) { t ->
                 logd("onError // checkDestination")
@@ -180,7 +180,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     @SuppressLint("SetTextI18n")
-    private fun getOfflineQuota() {
+    private fun getOfflineQuota(isPressRefresh: Boolean) {
         val observable = EncapsulateRetrofit.init().getOfflineQuota(createDestinationPostBody)
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -188,6 +188,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 logd("onNext // OfflineQuota")
                 main_offline_download_second_title.text =
                     "配额（今日已用 ${offlineQuota.dailyUsed} 次，剩余 ${offlineQuota.available} 次/ ${offlineQuota.dailyQuota} 次）"
+                if(isPressRefresh) toast(getString(R.string.main_refresh_success))
             }) { t ->
                 logd("onError // OfflineQuota")
                 t.printStackTrace()
@@ -207,22 +208,22 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 }
 
             }
-            main_file_manager_card->{
+            main_file_manager_card -> {
                 val intent = Intent(this, FileListActivity::class.java)
                 startActivity(intent)
 
             }
-            main_offline_download_card->{
+            main_offline_download_card -> {
 
             }
-            main_ticket_layout->{
+            main_ticket_layout -> {
 
             }
-            main_setting_layout->{
+            main_setting_layout -> {
                 val intent = Intent(this, SettingsActivity::class.java)
                 startActivity(intent)
             }
-            main_about_layout->{
+            main_about_layout -> {
                 val intent = Intent(this, AboutActivity::class.java)
                 startActivity(intent)
             }
@@ -235,7 +236,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             INTENT_ACTIVITY_LOGIN_CODE -> if (resultCode == RESULT_OK) {
                 LOGIN_STATUS = 1
                 saveCookie(API_NUDE_URL, COOKIES)
-                getUserInfo()
+                getUserInfo(false)
             }
         }
     }

@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/setting_video_title">
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory app:title="@string/setting_video_title"
+        app:iconSpaceReserved="false">
         <Preference
-            android:key="click_video_clear_cache"
-            android:title="@string/setting_video_clear_cache"
-            android:summary="@string/setting_video_clear_cache_desc">
+            app:key="click_video_clear_cache"
+            app:title="@string/setting_video_clear_cache"
+            app:summary="@string/setting_video_clear_cache_desc"
+            app:iconSpaceReserved="false">
         </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/setting_misc_title">
+    <PreferenceCategory app:title="@string/setting_misc_title"
+        app:iconSpaceReserved="false">
         <Preference
-            android:key="click_misc_show_guide"
-            android:title="@string/setting_misc_show_guide"
-            android:summary="@string/setting_misc_show_guide_desc">
+            app:key="click_misc_show_guide"
+            app:title="@string/setting_misc_show_guide"
+            app:summary="@string/setting_misc_show_guide_desc"
+            app:iconSpaceReserved="false">
         </Preference>
     </PreferenceCategory>
 

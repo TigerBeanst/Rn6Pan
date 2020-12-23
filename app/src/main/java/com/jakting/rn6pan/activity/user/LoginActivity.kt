@@ -34,7 +34,7 @@ class LoginActivity : BaseActivity() {
                 COOKIES = CookieManager.getInstance().getCookie(url)
                 intent.putExtra("isLoginSuccess", true)
                 setResult(RESULT_OK, intent)
-                finish()
+                finishAfterTransition()
             }
         }
 

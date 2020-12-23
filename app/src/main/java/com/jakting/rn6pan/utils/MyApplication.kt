@@ -29,6 +29,7 @@ class MyApplication : Application() {
         var parentPathList = arrayListOf<String>("/")
         var orderFlag = 0 // 0 为 name，1 为 ctime
         var defaultOrder = true
+        var labelFilter = 0
         var nameOrderBy = ""
         var ctimeOrderBy = ""
     }

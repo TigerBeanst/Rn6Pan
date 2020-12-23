@@ -37,6 +37,11 @@ interface ApiParse {
     @POST("newfile/list")
     fun getFileOrDirectoryList(@Body requestBody: RequestBody): Observable<FileOrDirectoryList>
 
+    //v3/21.新文件/040.重命名文件.md
+    //重命名文件或文件夹
+    @POST("newfile/rename")
+    fun renameFile(@Body requestBody: RequestBody): Observable<FileActionReturn>
+
     //v3/21.新文件/010.创建文件夹.md
     //新建文件夹
     @POST("newfile")
@@ -48,9 +53,29 @@ interface ApiParse {
     fun getLabelsList(): Observable<FileLabelList>
 
     //v3/21.新文件/080.文件星标管理.md
-    //列出现有星标列表
+    //修改星标（目前仅支持修改名字）
     @PUT("labels/{identity}")
     fun modifyLabelName(@Body requestBody: RequestBody, @Path("identity") identity:Int): Observable<FileLabel>
+
+    //v3/21.新文件/080.文件星标管理.md
+    //删除星标
+    @DELETE("labels/{identity}")
+    fun deleteLabel(@Path("identity") identity:Int): Observable<FileActionReturn>
+
+    //v3/21.新文件/080.文件星标管理.md
+    //创建文件星标
+    @POST("labels")
+    fun createLabel(@Body requestBody: RequestBody): Observable<FileLabel>
+
+    //v3/21.新文件/090.给文件添加或删除星标.md
+    //为指定文件/文件夹->添加星标
+    @POST("newfile/addLabel")
+    fun addLabel(@Body requestBody: RequestBody): Observable<FileActionReturn>
+
+    //v3/21.新文件/090.给文件添加或删除星标.md
+    //为指定文件/文件夹->移除星标
+    @POST("newfile/removeLabel")
+    fun removeLabel(@Body requestBody: RequestBody): Observable<FileActionReturn>
 
     /*
         预览

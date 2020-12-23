@@ -19,3 +19,9 @@ data class FileLabelItem(
     var drawable: Drawable,
     var identity: Int
 )
+
+data class FileActionReturn(
+    var identity: String,
+    var data: Int,
+    var async: Boolean
+)

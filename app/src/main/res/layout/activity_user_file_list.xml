@@ -3,9 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="presenter"
-            type="com.jakting.rn6pan.utils.Presenter"/>
+            type="com.jakting.rn6pan.utils.Presenter" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -25,10 +26,12 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
 
         </com.google.android.material.appbar.AppBarLayout>
+
         <ViewStub
             android:id="@+id/cab_stub"
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize" />
+
         <com.scwang.smart.refresh.layout.SmartRefreshLayout
             android:id="@+id/file_list_swipeLayout"
             android:layout_width="match_parent"
@@ -41,11 +44,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <androidx.recyclerview.widget.RecyclerView
+            <com.cooltechworks.views.shimmer.ShimmerRecyclerView
                 android:id="@+id/file_list_recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:overScrollMode="never"
+                app:shimmer_demo_child_count="10"
+                app:shimmer_demo_layout="@layout/item_file_or_directory"
+                app:shimmer_demo_layout_manager_type="linear_vertical"
+                app:shimmer_demo_angle="20"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
@@ -74,7 +81,7 @@
 
             <include layout="@layout/file_fab_create_folder_layout" />
 
-            <include layout="@layout/file_fab_transmission_layout" />
+<!--            <include layout="@layout/file_fab_transmission_layout" />-->
 
         </LinearLayout>
 
