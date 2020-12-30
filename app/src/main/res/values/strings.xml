@@ -38,7 +38,7 @@
     <string name="file_one_label_filename">文件</string>
     <string name="file_one_label_size">大小</string>
     <string name="file_file_not_preview">无法预览</string>
-    <string name="file_file_not_preview_desc">此文件的 MIME 为 %s，暂不支持预览，请下载后查看。\n（注：并非拥有视频/图片文件后缀就能预览）</string>
+    <string name="file_file_not_preview_desc">此文件的 MIME 为 %s，暂不支持预览，请下载后查看。</string>
     <string name="file_image_not_preview">无法预览</string>
     <string name="file_video_not_vip">无法播放</string>
     <string name="file_image_not_preview_desc">此图片暂无法预览，请下载后查看</string>

@@ -64,26 +64,6 @@ class Presenter(var context: Context) : ItemListener {
                     isExtImage(fileOrDirectory.ext) -> {
                         getImagePreviewURLByDownloadAddress(fileOrDirectory.identity,viewHolder, parentContext)
                     }
-//                    fileOrDirectory.mime.contains("video") or fileOrDirectory.mime.contains("binary") /*视频*/ -> {
-//                        logd("是视频，开始判断是否为订阅用户")
-//                        if (MyApplication.userInfo.vip != 0) { //已订阅
-//                            val intent = Intent(parentContext, PlayerActivity::class.java)
-//                            intent.putExtra("identity", fileOrDirectory.identity)
-//                            parentContext.startActivity(intent)
-//                        } else { //未订阅
-//                            MaterialAlertDialogBuilder(parentContext)
-//                                .setTitle(parentContext.getString(R.string.file_video_not_vip))
-//                                .setMessage(parentContext.getString(R.string.file_video_not_vip_desc))
-//                                .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
-//                                .show()
-//                        }
-//                    }
-//                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
-//                        previewImage(fileOrDirectory.identity, viewHolder, parentContext)
-//                    }
-//                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
-//
-//                    }
                     else -> {
                         MaterialAlertDialogBuilder(parentContext)
                             .setTitle(parentContext.getString(R.string.file_file_not_preview))
@@ -164,11 +144,7 @@ class Presenter(var context: Context) : ItemListener {
                 logd("onError // getImagePreview")
                 val errorString: String = getErrorString(t)
                 logd(errorString)
-                MaterialAlertDialogBuilder(parentContext)
-                    .setTitle(parentContext.getString(R.string.file_image_not_preview))
-                    .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
-                    .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
-                    .show()
+                toast(parentContext.getString(R.string.action_fail))
             }
     }
 

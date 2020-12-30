@@ -9,6 +9,7 @@ import com.jakting.rn6pan.utils.EncapsulateRetrofit
 import com.jakting.rn6pan.utils.MyApplication.Companion.nowTimeStamp
 import com.jakting.rn6pan.utils.getErrorString
 import com.jakting.rn6pan.utils.logd
+import com.jakting.rn6pan.utils.toast
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.cache.CacheFactory
 import com.shuyu.gsyvideoplayer.cache.ProxyCacheManager
@@ -80,33 +81,6 @@ class PlayerActivity : BaseActivity() {
 
         val videoIdentity = intent.getStringExtra("identity")
         getVideoPreviewURLByDownloadAddress(videoIdentity!!)
-//        val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
-//        val createDestinationPostBody =
-//            RequestBody.create(
-//                MediaType.parse("application/json"), jsonForPost
-//            )
-//        val observable =
-//            EncapsulateRetrofit.init().getVideoPreview(createDestinationPostBody)
-//        observable.subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .subscribe({ videoPreview ->
-//                logd("onNext // getVideoPreview")
-//                startPlay(videoPreview.playAddress,videoPreview.title)
-//            }) { t ->
-//                logd("onError // getVideoPreview")
-//                val errorString: String = getErrorString(t)
-//                logd(errorString)
-//                logd("没有视频预览地址，备选方案，使用下载地址")
-//                getDownloadAddress(videoIdentity!!)
-////                MaterialAlertDialogBuilder(this)
-////                    .setTitle(getString(R.string.file_video_not_vip))
-////                    .setMessage(getString(R.string.file_video_not_preview_desc))
-////                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
-////                        videoPlayer!!.setVideoAllCallBack(null)
-////                        mActivity.onBackPressed()
-////                    }
-////                    .show()
-//            }
     }
 
     private fun getVideoPreviewURLByDownloadAddress(videoIdentity: String) {
@@ -127,14 +101,7 @@ class PlayerActivity : BaseActivity() {
                 logd("onError // getVideoPreviewURLByDownloadAddress")
                 val errorString: String = getErrorString(t)
                 logd(errorString)
-                MaterialAlertDialogBuilder(this)
-                    .setTitle(getString(R.string.file_video_not_vip))
-                    .setMessage(getString(R.string.file_video_not_preview_desc))
-                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
-                        videoPlayer!!.setVideoAllCallBack(null)
-                        onBackPressed()
-                    }
-                    .show()
+                toast(getString(R.string.action_fail))
             }
     }
 
