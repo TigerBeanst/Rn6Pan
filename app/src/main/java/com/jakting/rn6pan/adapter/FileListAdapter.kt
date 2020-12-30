@@ -430,14 +430,4 @@ class FileListAdapter(
             }
     }
 
-//    private fun showBottomDialog(fileOrDirectory: FileOrDirectory, parent: ViewGroup) {
-//        val view: View =
-//            LayoutInflater.from(parent.context).inflate(R.layout.content_file_info, null)
-//        view.file_one_filename.text = fileOrDirectory.name
-//        view.file_one_size.text = getPrintSize(fileOrDirectory.size)
-//        val dialog = BottomSheetDialog(view.context)
-//        dialog.setContentView(view.file_one_dialog)
-//        dialog.show()
-//        logd("触发了BottomDialog")
-//    }
 }

@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.view.ActionMode
+import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableBoolean
-import com.afollestad.materialcab.attached.isActive
 import com.afollestad.materialcab.attached.isDestroyed
 import com.afollestad.materialcab.createCab
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -51,25 +51,39 @@ class Presenter(var context: Context) : ItemListener {
 
             } else {
                 when {
-                    fileOrDirectory.mime.contains("video") /*视频*/ -> {
-                        if (MyApplication.userInfo.vip != 0) { //已订阅
-                            val intent = Intent(parentContext, PlayerActivity::class.java)
-                            intent.putExtra("identity", fileOrDirectory.identity)
+                    isExtVideo(fileOrDirectory.ext) -> {
+                        val intent = Intent(parentContext, PlayerActivity::class.java)
+                        intent.putExtra("identity", fileOrDirectory.identity)
+                        if (System.currentTimeMillis() / 1000 - MyApplication.nowTimeStamp >= 5){
                             parentContext.startActivity(intent)
-                        } else { //未订阅
-                            MaterialAlertDialogBuilder(parentContext)
-                                .setTitle(parentContext.getString(R.string.file_video_not_vip))
-                                .setMessage(parentContext.getString(R.string.file_video_not_vip_desc))
-                                .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
-                                .show()
+                        }else{
+                            toast(parentContext.getString(R.string.preview_loading))
                         }
-                    }
-                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
-                        getImagePreviewURL(fileOrDirectory.identity, viewHolder, parentContext)
-                    }
-                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
 
                     }
+                    isExtImage(fileOrDirectory.ext) -> {
+                        getImagePreviewURLByDownloadAddress(fileOrDirectory.identity,viewHolder, parentContext)
+                    }
+//                    fileOrDirectory.mime.contains("video") or fileOrDirectory.mime.contains("binary") /*视频*/ -> {
+//                        logd("是视频，开始判断是否为订阅用户")
+//                        if (MyApplication.userInfo.vip != 0) { //已订阅
+//                            val intent = Intent(parentContext, PlayerActivity::class.java)
+//                            intent.putExtra("identity", fileOrDirectory.identity)
+//                            parentContext.startActivity(intent)
+//                        } else { //未订阅
+//                            MaterialAlertDialogBuilder(parentContext)
+//                                .setTitle(parentContext.getString(R.string.file_video_not_vip))
+//                                .setMessage(parentContext.getString(R.string.file_video_not_vip_desc))
+//                                .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
+//                                .show()
+//                        }
+//                    }
+//                    fileOrDirectory.mime.contains("image") /*图片*/ -> {
+//                        previewImage(fileOrDirectory.identity, viewHolder, parentContext)
+//                    }
+//                    fileOrDirectory.mime.contains("application") /*可执行文件*/ -> {
+//
+//                    }
                     else -> {
                         MaterialAlertDialogBuilder(parentContext)
                             .setTitle(parentContext.getString(R.string.file_file_not_preview))
@@ -128,7 +142,8 @@ class Presenter(var context: Context) : ItemListener {
         return true
     }
 
-    private fun getImagePreviewURL(
+
+    private fun getImagePreviewURLByDownloadAddress(
         identity: String,
         viewHolder: FileListAdapter.ViewHolder,
         parentContext: Context
@@ -139,24 +154,21 @@ class Presenter(var context: Context) : ItemListener {
                 MediaType.parse("application/json"), jsonForPost
             )
         val observable =
-            EncapsulateRetrofit.init().getImagePreview(createDestinationPostBody)
+            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ picturePreview ->
                 logd("onNext // getImagePreview")
-                clickImage(picturePreview.playAddress, viewHolder, parentContext)
+                clickImage(picturePreview.downloadAddress, viewHolder, parentContext)
             }) { t ->
                 logd("onError // getImagePreview")
                 val errorString: String = getErrorString(t)
                 logd(errorString)
-                val errorJsonObject = JsonParser().parse(errorString).asJsonObject
-                if (!errorJsonObject.get("success").asBoolean) {
-                    MaterialAlertDialogBuilder(parentContext)
-                        .setTitle(parentContext.getString(R.string.file_image_not_preview))
-                        .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
-                        .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
-                        .show()
-                }
+                MaterialAlertDialogBuilder(parentContext)
+                    .setTitle(parentContext.getString(R.string.file_image_not_preview))
+                    .setMessage(parentContext.getString(R.string.file_image_not_preview_desc))
+                    .setPositiveButton(parentContext.getString(R.string.ok)) { _, _ -> }
+                    .show()
             }
     }
 

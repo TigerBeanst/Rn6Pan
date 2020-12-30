@@ -35,6 +35,11 @@ android {
     dataBinding {
         enabled = true
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -57,8 +62,10 @@ dependencies {
     implementation 'com.github.sharish:ShimmerRecyclerView:v1.3'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.maning0303:MNImageBrowser:V1.3.5'
-    implementation 'com.shuyu:gsyVideoPlayer-java:7.1.8'
-    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.8'
+    implementation 'com.shuyu:gsyVideoPlayer-java:8.0.0'
+//    implementation 'com.shuyu:gsyVideoPlayer-armv7a:8.0.0'
+//    implementation 'com.shuyu:gsyVideoPlayer-arm64:8.0.0'
+//    implementation 'com.shuyu:gsyVideoPlayer-ex_so:8.0.0'
 
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

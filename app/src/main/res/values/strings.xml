@@ -4,6 +4,7 @@
     <string name="cancel">取消</string>
     <string name="action_fail">操作失败，请检查网络</string>
     <string name="loading">请稍等…</string>
+    <string name="preview_loading">操作过快，请稍等几秒再进行预览</string>
 
     <!--main-->
     <string name="main_refresh">刷新</string>

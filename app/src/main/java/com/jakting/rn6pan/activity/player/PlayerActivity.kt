@@ -6,11 +6,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.EncapsulateRetrofit
+import com.jakting.rn6pan.utils.MyApplication.Companion.nowTimeStamp
 import com.jakting.rn6pan.utils.getErrorString
 import com.jakting.rn6pan.utils.logd
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.cache.CacheFactory
-import com.shuyu.gsyvideoplayer.listener.VideoAllCallBack
+import com.shuyu.gsyvideoplayer.cache.ProxyCacheManager
+import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
@@ -19,8 +21,6 @@ import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.player_control_video.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
-import tv.danmaku.ijk.media.exo2.Exo2PlayerManager
-import tv.danmaku.ijk.media.exo2.ExoPlayerCacheManager
 
 
 class PlayerActivity : BaseActivity() {
@@ -32,8 +32,10 @@ class PlayerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_play)
-        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
-        CacheFactory.setCacheManager(ExoPlayerCacheManager::class.java)
+//        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
+//        CacheFactory.setCacheManager(ExoPlayerCacheManager::class.java)
+        PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
+        CacheFactory.setCacheManager(ProxyCacheManager::class.java)
         init()
     }
 
@@ -45,7 +47,7 @@ class PlayerActivity : BaseActivity() {
         videoPlayer!!.backButton.visibility = View.VISIBLE
         //设置返回按键功能
         videoPlayer!!.backButton.setOnClickListener {
-            mActivity.onBackPressed()
+            onBackPressed()
         }
         //设置变速
         videoPlayer!!.change_playspeed.text =
@@ -77,23 +79,52 @@ class PlayerActivity : BaseActivity() {
         videoPlayer!!.setBottomProgressBarDrawable(null)
 
         val videoIdentity = intent.getStringExtra("identity")
+        getVideoPreviewURLByDownloadAddress(videoIdentity!!)
+//        val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
+//        val createDestinationPostBody =
+//            RequestBody.create(
+//                MediaType.parse("application/json"), jsonForPost
+//            )
+//        val observable =
+//            EncapsulateRetrofit.init().getVideoPreview(createDestinationPostBody)
+//        observable.subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe({ videoPreview ->
+//                logd("onNext // getVideoPreview")
+//                startPlay(videoPreview.playAddress,videoPreview.title)
+//            }) { t ->
+//                logd("onError // getVideoPreview")
+//                val errorString: String = getErrorString(t)
+//                logd(errorString)
+//                logd("没有视频预览地址，备选方案，使用下载地址")
+//                getDownloadAddress(videoIdentity!!)
+////                MaterialAlertDialogBuilder(this)
+////                    .setTitle(getString(R.string.file_video_not_vip))
+////                    .setMessage(getString(R.string.file_video_not_preview_desc))
+////                    .setPositiveButton(getString(R.string.ok)) { _, _ ->
+////                        videoPlayer!!.setVideoAllCallBack(null)
+////                        mActivity.onBackPressed()
+////                    }
+////                    .show()
+//            }
+    }
+
+    private fun getVideoPreviewURLByDownloadAddress(videoIdentity: String) {
         val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
         val createDestinationPostBody =
             RequestBody.create(
                 MediaType.parse("application/json"), jsonForPost
             )
         val observable =
-            EncapsulateRetrofit.init().getVideoPreview(createDestinationPostBody)
+            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
         observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ videoPreview ->
-                logd("onNext // getVideoPreview")
-                videoPlayer!!.setUp(videoPreview.playAddress, true, videoPreview.title)
-//                videoPlayer!!.startWindowFullscreen(this, false, false)
-                videoPlayer!!.startPlayLogic()
-//                videoPlayer!!.startWindowFullscreen(this, true, true)
+            .subscribe({ fileOrDirectory ->
+                logd("onNext // getVideoPreviewURLByDownloadAddress")
+                nowTimeStamp = System.currentTimeMillis() / 1000
+                startPlay(fileOrDirectory.downloadAddress, fileOrDirectory.name)
             }) { t ->
-                logd("onError // getVideoPreview")
+                logd("onError // getVideoPreviewURLByDownloadAddress")
                 val errorString: String = getErrorString(t)
                 logd(errorString)
                 MaterialAlertDialogBuilder(this)
@@ -101,10 +132,17 @@ class PlayerActivity : BaseActivity() {
                     .setMessage(getString(R.string.file_video_not_preview_desc))
                     .setPositiveButton(getString(R.string.ok)) { _, _ ->
                         videoPlayer!!.setVideoAllCallBack(null)
-                        mActivity.onBackPressed()
+                        onBackPressed()
                     }
                     .show()
             }
+    }
+
+
+    private fun startPlay(playAddress: String, title: String) {
+        logd("此时播放地址：$playAddress")
+        videoPlayer!!.setUp(playAddress, true, title)
+        videoPlayer!!.startPlayLogic()
     }
 
     override fun onPause() {
@@ -117,11 +155,13 @@ class PlayerActivity : BaseActivity() {
         videoPlayer!!.onVideoResume()
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
         GSYVideoManager.releaseAllVideos()
 //        if (orientationUtils != null) orientationUtils!!.releaseListener()
     }
+
 
     override fun onBackPressed() {
         //先返回正常状态。如果屏幕是横屏，则模拟触碰全屏按钮

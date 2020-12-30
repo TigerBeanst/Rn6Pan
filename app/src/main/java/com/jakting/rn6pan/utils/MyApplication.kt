@@ -26,6 +26,7 @@ class MyApplication : Application() {
         var TOKEN = ""
         var COOKIES = ""
         lateinit var userInfo: UserInfo
+        var nowTimeStamp:Long = 0
         var parentPathList = arrayListOf<String>("/")
         var orderFlag = 0 // 0 为 name，1 为 ctime
         var defaultOrder = true

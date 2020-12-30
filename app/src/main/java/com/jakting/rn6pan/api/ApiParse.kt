@@ -37,6 +37,11 @@ interface ApiParse {
     @POST("newfile/list")
     fun getFileOrDirectoryList(@Body requestBody: RequestBody): Observable<FileOrDirectoryList>
 
+    //v3/21.新文件/（找不到文档）
+    //下载文件
+    @POST("newfile/download")
+    fun getDownloadAddress(@Body requestBody: RequestBody): Observable<FileOrDirectory>
+
     //v3/21.新文件/040.重命名文件.md
     //重命名文件或文件夹
     @POST("newfile/rename")

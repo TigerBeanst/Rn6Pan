@@ -19,11 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakting.rn6pan.BaseActivity
+import com.jakting.rn6pan.BuildConfig
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileLabelItem
@@ -50,6 +52,7 @@ import com.takusemba.spotlight.shape.Circle
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
+import kotlinx.android.synthetic.main.content_file_info.view.*
 import kotlinx.android.synthetic.main.dialog_edittext.*
 import kotlinx.android.synthetic.main.file_fab_create_folder_layout.*
 import kotlinx.android.synthetic.main.file_fab_upload_layout.*
@@ -86,7 +89,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            android.R.id.home-> finishAfterTransition()
+            android.R.id.home -> finishAfterTransition()
             R.id.menu_file_main_star -> {
                 clickMenuStar()
             }
@@ -298,6 +301,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         bottomAppBar.setOnMenuItemClickListener {
             if (isShowFabMenu) hideMenu()
             when (it.itemId) {
+                R.id.menu_file_transmission ->{
+                    clickBottomBarTransmission()
+                    true
+                } 
                 R.id.menu_file_sort -> {
                     val items = arrayOf(
                         getString(R.string.file_sort_default),
@@ -497,7 +504,19 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         return null
     }
 
-    //点击菜单中的星标
+    //点击 BottomBar 中的 传输列表
+    private fun clickBottomBarTransmission() {
+        val view: View =
+            LayoutInflater.from(this).inflate(R.layout.content_file_info, null)
+        view.file_one_filename.text = "aa"
+        view.file_one_size.text = "bb"
+        val dialog = BottomSheetDialog(view.context)
+        dialog.setContentView(view.file_one_dialog)
+        dialog.show()
+        logd("触发了BottomDialog")
+    }
+
+    //点击 Toolbar 中的 星标
     private fun clickMenuStar() {
         val arrayOfLabelList = mutableListOf<FileLabelItem>()
         for (fileLabel in fileLabelList.dataList) {
