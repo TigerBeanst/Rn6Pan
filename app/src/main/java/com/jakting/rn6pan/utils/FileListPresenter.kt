@@ -54,15 +54,19 @@ class Presenter(var context: Context) : ItemListener {
                     isExtVideo(fileOrDirectory.ext) -> {
                         val intent = Intent(parentContext, PlayerActivity::class.java)
                         intent.putExtra("identity", fileOrDirectory.identity)
-                        if (System.currentTimeMillis() / 1000 - MyApplication.nowTimeStamp >= 5){
+                        if (fileOrDirectory.size < 104857600 || System.currentTimeMillis() / 1000 - MyApplication.nowTimeStamp >= 5) {
                             parentContext.startActivity(intent)
-                        }else{
+                        } else {
                             toast(parentContext.getString(R.string.preview_loading))
                         }
 
                     }
                     isExtImage(fileOrDirectory.ext) -> {
-                        getImagePreviewURLByDownloadAddress(fileOrDirectory.identity,viewHolder, parentContext)
+                        getImagePreviewURLByDownloadAddress(
+                            fileOrDirectory.identity,
+                            viewHolder,
+                            parentContext
+                        )
                     }
                     else -> {
                         MaterialAlertDialogBuilder(parentContext)

@@ -2,7 +2,11 @@ package com.jakting.rn6pan.activity.player
 
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE
+import android.view.WindowInsets
+import android.view.WindowInsetsController
+import androidx.core.view.doOnLayout
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.EncapsulateRetrofit
@@ -33,8 +37,7 @@ class PlayerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_play)
-//        PlayerFactory.setPlayManager(Exo2PlayerManager::class.java)
-//        CacheFactory.setCacheManager(ExoPlayerCacheManager::class.java)
+        val decorView: View = this.window.decorView
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
         CacheFactory.setCacheManager(ProxyCacheManager::class.java)
         init()
@@ -50,6 +53,7 @@ class PlayerActivity : BaseActivity() {
         videoPlayer!!.backButton.setOnClickListener {
             onBackPressed()
         }
+        videoPlayer!!.isIfCurrentIsFullscreen = true
         //设置变速
         videoPlayer!!.change_playspeed.text =
             String.format(getString(R.string.player_change_play_speed), playSpeed)
@@ -111,6 +115,8 @@ class PlayerActivity : BaseActivity() {
         videoPlayer!!.setUp(playAddress, true, title)
         videoPlayer!!.startPlayLogic()
     }
+
+
 
     override fun onPause() {
         super.onPause()

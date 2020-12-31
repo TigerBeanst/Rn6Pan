@@ -14,8 +14,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:colorBackground">@color/colorBackground</item>
-
+        <item name="android:navigationBarColor">@color/colorBackground</item>
         <item name="actionModeCloseDrawable">@drawable/ic_baseline_close_24</item>
+    </style>
+
+    <style name="AppTheme.FileList" parent="AppTheme">
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.About" parent="Theme.MaterialComponents.DayNight.NoActionBar">

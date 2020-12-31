@@ -16,6 +16,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
@@ -25,7 +26,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakting.rn6pan.BaseActivity
-import com.jakting.rn6pan.BuildConfig
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileLabelItem
@@ -291,6 +291,20 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             }
         }
         mBinding.fileListRecyclerView.adapter = adapter
+        mBinding.fileListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 0) {
+                    if (file_fab.isShown){
+                        file_fab.hide()
+                    }
+                } else {
+                    if (!file_fab.isShown){
+                        file_fab.show()
+                    }
+                }
+            }
+        })
         file_list_swipeLayout.finishRefresh(0)
         toolbar.menu.findItem(R.id.menu_file_main_star).isEnabled = true
         labelFilter = 0
@@ -301,10 +315,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         bottomAppBar.setOnMenuItemClickListener {
             if (isShowFabMenu) hideMenu()
             when (it.itemId) {
-                R.id.menu_file_transmission ->{
+                R.id.menu_file_transmission -> {
                     clickBottomBarTransmission()
                     true
-                } 
+                }
                 R.id.menu_file_sort -> {
                     val items = arrayOf(
                         getString(R.string.file_sort_default),

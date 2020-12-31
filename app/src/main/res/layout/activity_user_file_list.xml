@@ -37,7 +37,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="?attr/actionBarSize"
-            android:layout_marginBottom="?attr/actionBarSize"
             app:srlDragRate="0.4">
 
             <com.scwang.smart.refresh.header.MaterialHeader

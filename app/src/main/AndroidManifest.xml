@@ -24,6 +24,7 @@
             android:name=".activity.user.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FileList"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".activity.common.SettingsActivity"

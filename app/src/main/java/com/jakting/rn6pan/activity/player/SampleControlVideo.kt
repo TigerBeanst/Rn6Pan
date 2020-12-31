@@ -1,19 +1,22 @@
 package com.jakting.rn6pan.activity.player
 
+import android.app.Activity
 import android.content.Context
-import android.graphics.Matrix
+import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.Surface
 import android.view.View
-import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.TextView
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
+import com.jakting.rn6pan.utils.logd
+import com.shuyu.gsyvideoplayer.utils.CommonUtil
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer
 import com.shuyu.gsyvideoplayer.video.base.GSYVideoPlayer
+import kotlin.math.abs
 
 
 /**
@@ -70,7 +73,7 @@ class SampleControlVideo : StandardGSYVideoPlayer {
         }
 
         //旋转播放角度
-        mChangeRotate!!.setOnClickListener{
+        mChangeRotate!!.setOnClickListener {
             if (!mHadPlay) {
                 return@setOnClickListener
             }
@@ -184,5 +187,39 @@ class SampleControlVideo : StandardGSYVideoPlayer {
         }
         changeTextureViewShowType()
         if (mTextureView != null) mTextureView.requestLayout()
+    }
+
+    override fun touchSurfaceMove(deltaX: Float, deltaY: Float, y: Float) {
+        var curWidth = 0
+        var curHeight = 0
+        if (activityContext != null) {
+            curWidth =
+                if (CommonUtil.getCurrentScreenLand(activityContext as Activity)) mScreenHeight else mScreenWidth
+            curHeight =
+                if (CommonUtil.getCurrentScreenLand(activityContext as Activity)) mScreenWidth else mScreenHeight
+        }
+        if (mChangePosition) {
+            val totalTimeDuration = duration
+            mSeekTimePosition =
+                (mDownPosition + deltaX * totalTimeDuration / curWidth / mSeekRatio).toInt()
+            if (mSeekTimePosition > totalTimeDuration) mSeekTimePosition = totalTimeDuration
+            val seekTime = CommonUtil.stringForTime(mSeekTimePosition)
+            val totalTime = CommonUtil.stringForTime(totalTimeDuration)
+            showProgressDialog(deltaX, seekTime, mSeekTimePosition, totalTime, totalTimeDuration)
+        } else if (mChangeVolume) {
+            val deltaYY = -deltaY
+            val max = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+            val deltaV = (max * deltaYY * 3 / curHeight).toInt()
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mGestureDownVolume + deltaV, 0)
+            val volumePercent =
+                (mGestureDownVolume * 100 / max + deltaYY * 3 * 100 / curHeight).toInt()
+            showVolumeDialog(-deltaY, volumePercent)
+        } else if (mBrightness) {
+            if (abs(deltaY) > mThreshold) {
+                val percent = -deltaY / curHeight / 0.25f  //0.25f是手动调节的滑动比例
+                onBrightnessSlide(percent)
+                mDownY = y
+            }
+        }
     }
 }
