@@ -1,11 +1,16 @@
 package com.jakting.rn6pan.adapter
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
-import android.view.*
+import android.view.ContextMenu
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
@@ -13,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
+import com.arialyy.aria.core.Aria
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -23,11 +29,10 @@ import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.databinding.ItemFileOrDirectoryBinding
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
+import com.jakting.rn6pan.utils.download.getNameFromUrl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import kotlinx.android.synthetic.main.content_file_info.view.*
-import kotlinx.android.synthetic.main.dialog_edittext.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.text.SimpleDateFormat
@@ -119,7 +124,7 @@ class FileListAdapter(
                 //点击更多
                 when (it.itemId) {
                     R.id.menu_file_more_download -> {
-                        toast("test")
+                        getDownloadAddress(fileOrDirectory.identity)
                     }
                     R.id.menu_file_more_download_to -> {
                         toast("test")
@@ -192,13 +197,13 @@ class FileListAdapter(
         } else {
             holder.fileOrDirectoryLabel.setBackgroundColor(Color.TRANSPARENT)
         }
-        holder.fileOrDirectoryName.apply{
+        holder.fileOrDirectoryName.apply {
             setBackgroundColor(ContextCompat.getColor(parentContext, android.R.color.transparent))
             hint = fileOrDirectory.name
         }
         val params = holder.fileOrDirectoryInfo.layoutParams
         params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-        holder.fileOrDirectoryInfo.apply{
+        holder.fileOrDirectoryInfo.apply {
             layoutParams = params
             setBackgroundColor(ContextCompat.getColor(parentContext, android.R.color.transparent))
             hint =
@@ -426,6 +431,37 @@ class FileListAdapter(
             }) { t ->
                 logd("onError // removeLabel")
                 t.printStackTrace()
+                toast(parentContext.getString(R.string.action_fail))
+            }
+    }
+
+    //获取下载地址
+    private fun getDownloadAddress(videoIdentity: String) {
+        val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
+        val createDestinationPostBody =
+            RequestBody.create(
+                MediaType.parse("application/json"), jsonForPost
+            )
+        val observable =
+            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ fileOrDirectory ->
+                logd("onNext // getDownloadAddress")
+                Aria.download(parentContext)
+                    .load(fileOrDirectory.downloadAddress)
+                    .ignoreCheckPermissions()
+                    .setFilePath(
+                        parentContext.getExternalFilesDir("downloads")
+                            .toString() + "/" + getNameFromUrl(
+                            fileOrDirectory.downloadAddress
+                        )
+                    )    //文件保存路径
+                    .create()
+            }) { t ->
+                logd("onError // getDownloadAddress")
+                val errorString: String = getErrorString(t)
+                logd(errorString)
                 toast(parentContext.getString(R.string.action_fail))
             }
     }

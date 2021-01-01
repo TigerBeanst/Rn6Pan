@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingStart="20dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ImageView
+        android:id="@+id/file_list_fileicon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:clickable="false"
+        android:src="@drawable/file_icon_unknown" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/file_list_filename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorGreyLight"
+                android:hint="                                                                                                                                                                                                                                "
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/file_list_info"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_weight="0.5"
+                    android:background="@color/colorGreyLight"
+                    android:hint="                                                                                                                                                                                                                                "
+                    android:singleLine="true"
+                    android:textColor="?android:attr/textColorPrimary" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <ImageButton
+            android:id="@+id/file_list_more"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/file_more"
+            android:src="@drawable/ic_baseline_more_vert_24"
+            android:tint="?android:attr/colorControlNormal" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/file_list_image_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+</LinearLayout>

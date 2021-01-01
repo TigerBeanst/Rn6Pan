@@ -102,6 +102,9 @@
     <string name="file_toolbar_star_delete_msg">您确定要删除此星标吗？如果当前存在使用此星标的文件或文件夹，它们将会恢复为未标记状态。</string>
     <string name="file_toolbar_star_delete_success">删除星标成功</string>
 
+    <!--downloader-->
+    <string name="downloader_need_permission">此应用需要获取 SD 卡权限。请放心，下载目录将完全符合 Android 标准。</string>
+
     <!--setting-->
     <string name="setting_toolbar_title">设置</string>
     <string name="setting_video_title">视频</string>

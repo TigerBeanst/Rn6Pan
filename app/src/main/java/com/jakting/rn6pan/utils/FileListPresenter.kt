@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.view.View
 import androidx.appcompat.view.ActionMode
-import androidx.core.content.ContextCompat
 import androidx.databinding.ObservableBoolean
 import com.afollestad.materialcab.attached.isDestroyed
 import com.afollestad.materialcab.createCab
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.JsonParser
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.player.PlayerActivity
 import com.jakting.rn6pan.adapter.FileListAdapter
@@ -98,7 +96,7 @@ class Presenter(var context: Context) : ItemListener {
         if (mActionMode != null) {
             return false
         }
-        (context as FileListActivity).adapter.startActionMode()
+        (context as FileListActivity).fileListAdapter.startActionMode()
         val parentContext = v.context as FileListActivity
         val position = v.getTag(R.id.item_position) as Int
         val fileOrDirectory = v.getTag(R.id.item_fileOrDirectory) as FileOrDirectory
@@ -118,7 +116,7 @@ class Presenter(var context: Context) : ItemListener {
             onDestroy {
 //                fadeIn()
                 parentContext.supportActionBar?.show()
-                (context as FileListActivity).adapter.stopActionMode()
+                (context as FileListActivity).fileListAdapter.stopActionMode()
                 true
             }
         }

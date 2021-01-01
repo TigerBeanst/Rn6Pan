@@ -20,6 +20,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
+import com.arialyy.annotations.Download
+import com.arialyy.aria.core.Aria
+import com.arialyy.aria.core.common.AbsEntity
+import com.arialyy.aria.core.task.DownloadTask
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -27,6 +31,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
+import com.jakting.rn6pan.adapter.DownloadListAdapter
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileLabelItem
 import com.jakting.rn6pan.api.data.FileLabelList
@@ -52,7 +57,7 @@ import com.takusemba.spotlight.shape.Circle
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import kotlinx.android.synthetic.main.content_file_info.view.*
+import kotlinx.android.synthetic.main.content_file_downloader.view.*
 import kotlinx.android.synthetic.main.dialog_edittext.*
 import kotlinx.android.synthetic.main.file_fab_create_folder_layout.*
 import kotlinx.android.synthetic.main.file_fab_upload_layout.*
@@ -65,10 +70,14 @@ import okhttp3.RequestBody
 class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     var isShowFabMenu = false
     lateinit var fileLabelList: FileLabelList
-    lateinit var adapter: FileListAdapter
+    lateinit var fileListAdapter: FileListAdapter
+    lateinit var downloadListAdapter: DownloadListAdapter
     lateinit var mBinding: ActivityUserFileListBinding
     lateinit var dialogForLabelsList: AlertDialog
     lateinit var colorButton: MaterialButton
+
+    private val mDownloadData: MutableList<AbsEntity> = ArrayList()
+
     var colorInt = 0
     var cab: AttachedCab? = null
 
@@ -103,6 +112,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         mPresenter = Presenter(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        Aria.download(this).register() //初始化 Aria 下载引擎
         initFAB()
         initBottomBarNavIcon()
         //下拉刷新
@@ -226,7 +236,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .subscribe({ fileOrDirectoryList ->
                 logd("onNext // getFileOrDirectoryList")
                 nowFileOrDirectoryList = fileOrDirectoryList
-                setAdapter()
+                setFileListAdapter()
             }) { t ->
                 logd("onError // getFileOrDirectoryList")
                 t.printStackTrace()
@@ -275,12 +285,12 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             }
     }
 
-    //设置适配器
-    private fun setAdapter() {
+    //设置文件列表适配器
+    private fun setFileListAdapter() {
         val layoutManager = LinearLayoutManager(this)
         mBinding.fileListRecyclerView.layoutManager = layoutManager
-        adapter = FileListAdapter(nowFileOrDirectoryList.dataList, this)
-        adapter.setListener(mPresenter)
+        fileListAdapter = FileListAdapter(nowFileOrDirectoryList.dataList, this)
+        fileListAdapter.setListener(mPresenter)
         if (parentPathList.size > 1) {
             if (supportActionBar != null) {
                 supportActionBar!!.title = nowFileOrDirectoryList.parent.name
@@ -290,16 +300,16 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                 supportActionBar!!.title = getString(R.string.file_toolbar_title)
             }
         }
-        mBinding.fileListRecyclerView.adapter = adapter
+        mBinding.fileListRecyclerView.adapter = fileListAdapter
         mBinding.fileListRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy > 0) {
-                    if (file_fab.isShown){
+                    if (file_fab.isShown) {
                         file_fab.hide()
                     }
                 } else {
-                    if (!file_fab.isShown){
+                    if (!file_fab.isShown) {
                         file_fab.show()
                     }
                 }
@@ -521,13 +531,12 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     //点击 BottomBar 中的 传输列表
     private fun clickBottomBarTransmission() {
         val view: View =
-            LayoutInflater.from(this).inflate(R.layout.content_file_info, null)
-        view.file_one_filename.text = "aa"
-        view.file_one_size.text = "bb"
-        val dialog = BottomSheetDialog(view.context)
-        dialog.setContentView(view.file_one_dialog)
-        dialog.show()
+            LayoutInflater.from(this).inflate(R.layout.content_file_downloader, null)
+        val bottomDialog = BottomSheetDialog(view.context)
+        bottomDialog.setContentView(view)
+        bottomDialog.show()
         logd("触发了BottomDialog")
+        initAriaDownloader(view)
     }
 
     //点击 Toolbar 中的 星标
@@ -787,4 +796,36 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     }
 
     override fun onDialogDismissed(dialogId: Int) {}
+
+    private fun requestNewDownloadTask(downloadAddress: String){
+
+    }
+
+    private fun initAriaDownloader(view: View){
+        val temps = Aria.download(this).taskList
+        if(temps==null){
+
+        }
+//        val temps = Aria.download(this).totalTaskList
+        if (temps != null && temps.isNotEmpty()) {
+            for (temp in temps) {
+                logd("state = " + temp.state)
+            }
+            mDownloadData.addAll(temps)
+            val layoutManager = LinearLayoutManager(this)
+            view.recyclerView.layoutManager = layoutManager
+            downloadListAdapter = DownloadListAdapter(temps, this)
+            view.recyclerView.adapter = downloadListAdapter
+        }else{
+            logd("temps为null")
+        }
+
+
+    }
+
+    @Download.onTaskComplete
+    fun taskComplete(task: DownloadTask?) {
+        //在这里处理任务完成的状态
+    }
+
 }

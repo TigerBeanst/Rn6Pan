@@ -3,7 +3,6 @@
     package="com.jakting.rn6pan">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <application
         android:name=".utils.MyApplication"
         android:allowBackup="true"
