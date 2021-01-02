@@ -70,6 +70,7 @@ dependencies {
     implementation 'com.github.maning0303:MNImageBrowser:V1.3.5'
     implementation 'com.shuyu:gsyVideoPlayer-java:8.0.0'
     implementation 'com.arialyy.aria:core:3.8.5'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt 'com.arialyy.aria:compiler:3.8.5'
 
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'

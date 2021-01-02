@@ -102,8 +102,12 @@
     <string name="file_toolbar_star_delete_msg">您确定要删除此星标吗？如果当前存在使用此星标的文件或文件夹，它们将会恢复为未标记状态。</string>
     <string name="file_toolbar_star_delete_success">删除星标成功</string>
 
-    <!--downloader-->
-    <string name="downloader_need_permission">此应用需要获取 SD 卡权限。请放心，下载目录将完全符合 Android 标准。</string>
+    <!--transmission-->
+    <string name="transmission_download_title">下载</string>
+    <string name="transmission_download_delete">删除</string>
+    <string name="transmission_download_open_with">打开方式</string>
+    <string name="transmission_download_need_permission">此应用需要获取 SD 卡权限。请放心，下载目录将完全符合 Android 标准。</string>
+    <string name="transmission_upload_title">上传</string>
 
     <!--setting-->
     <string name="setting_toolbar_title">设置</string>
@@ -142,4 +146,6 @@
     <string name="spotlight_transmission_content">点击此处可以进入下载列表</string>
     <string name="spotlight_sortTarget_title">文件排序</string>
     <string name="spotlight_sortTarget_content">点击此处可以根据需要变换文件排序方式</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

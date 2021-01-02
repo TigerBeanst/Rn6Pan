@@ -20,19 +20,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialcab.attached.AttachedCab
 import com.afollestad.materialcab.attached.destroy
 import com.afollestad.materialcab.attached.isActive
-import com.arialyy.annotations.Download
-import com.arialyy.aria.core.Aria
-import com.arialyy.aria.core.common.AbsEntity
-import com.arialyy.aria.core.task.DownloadTask
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
-import com.jakting.rn6pan.adapter.DownloadListAdapter
 import com.jakting.rn6pan.adapter.FileListAdapter
+import com.jakting.rn6pan.adapter.TransmissionAdapter
 import com.jakting.rn6pan.api.data.FileLabelItem
 import com.jakting.rn6pan.api.data.FileLabelList
 import com.jakting.rn6pan.api.data.FileOrDirectoryList
@@ -57,7 +55,8 @@ import com.takusemba.spotlight.shape.Circle
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import kotlinx.android.synthetic.main.content_file_downloader.view.*
+import kotlinx.android.synthetic.main.content_file_transmission.*
+import kotlinx.android.synthetic.main.content_file_transmission.view.*
 import kotlinx.android.synthetic.main.dialog_edittext.*
 import kotlinx.android.synthetic.main.file_fab_create_folder_layout.*
 import kotlinx.android.synthetic.main.file_fab_upload_layout.*
@@ -71,12 +70,9 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     var isShowFabMenu = false
     lateinit var fileLabelList: FileLabelList
     lateinit var fileListAdapter: FileListAdapter
-    lateinit var downloadListAdapter: DownloadListAdapter
     lateinit var mBinding: ActivityUserFileListBinding
     lateinit var dialogForLabelsList: AlertDialog
     lateinit var colorButton: MaterialButton
-
-    private val mDownloadData: MutableList<AbsEntity> = ArrayList()
 
     var colorInt = 0
     var cab: AttachedCab? = null
@@ -112,7 +108,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         mPresenter = Presenter(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        Aria.download(this).register() //初始化 Aria 下载引擎
         initFAB()
         initBottomBarNavIcon()
         //下拉刷新
@@ -531,9 +526,12 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     //点击 BottomBar 中的 传输列表
     private fun clickBottomBarTransmission() {
         val view: View =
-            LayoutInflater.from(this).inflate(R.layout.content_file_downloader, null)
+            LayoutInflater.from(this).inflate(R.layout.content_file_transmission, null)
         val bottomDialog = BottomSheetDialog(view.context)
         bottomDialog.setContentView(view)
+        val mBehavior: BottomSheetBehavior<*> = BottomSheetBehavior.from(view.parent as View)
+        mBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        mBehavior.peekHeight = 0;
         bottomDialog.show()
         logd("触发了BottomDialog")
         initAriaDownloader(view)
@@ -797,35 +795,32 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     override fun onDialogDismissed(dialogId: Int) {}
 
-    private fun requestNewDownloadTask(downloadAddress: String){
+    private fun requestNewDownloadTask(downloadAddress: String) {
 
     }
 
-    private fun initAriaDownloader(view: View){
-        val temps = Aria.download(this).taskList
-        if(temps==null){
-
-        }
-//        val temps = Aria.download(this).totalTaskList
-        if (temps != null && temps.isNotEmpty()) {
-            for (temp in temps) {
-                logd("state = " + temp.state)
+    private fun initAriaDownloader(view: View) {
+        view.viewPager.adapter = TransmissionAdapter(this)
+        TabLayoutMediator(view.tabLayout, view.viewPager) { tab, position ->
+            when (position) {
+                0 -> {
+                    tab.text = getString(R.string.transmission_download_title)
+                    tab.icon = ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_cloud_download_24
+                    )
+                }
+                else -> {
+                    tab.text = getString(R.string.transmission_upload_title)
+                    tab.icon = ContextCompat.getDrawable(
+                        this,
+                        R.drawable.ic_baseline_cloud_upload_24
+                    )
+                }
             }
-            mDownloadData.addAll(temps)
-            val layoutManager = LinearLayoutManager(this)
-            view.recyclerView.layoutManager = layoutManager
-            downloadListAdapter = DownloadListAdapter(temps, this)
-            view.recyclerView.adapter = downloadListAdapter
-        }else{
-            logd("temps为null")
-        }
+        }.attach()
 
 
-    }
-
-    @Download.onTaskComplete
-    fun taskComplete(task: DownloadTask?) {
-        //在这里处理任务完成的状态
     }
 
 }

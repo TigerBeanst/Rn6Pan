@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/menu_transmission_download_delete"
+        android:contentDescription="@string/transmission_download_delete"
+        android:title="@string/transmission_download_delete"/>
+    <item android:id="@+id/menu_transmission_download_open_with"
+        android:contentDescription="@string/transmission_download_open_with"
+        android:title="@string/transmission_download_open_with"/>
+</menu>
