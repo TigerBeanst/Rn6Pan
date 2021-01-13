@@ -39,7 +39,7 @@ class TransDownloadFragment : Fragment() {
         initFragment()
     }
 
-    private fun initFragment(){
+    private fun initFragment() {
         val temps = Aria.download(this).taskList
 //        val temps = Aria.download(this).totalTaskList
         if (temps != null && temps.isNotEmpty()) {
@@ -57,13 +57,19 @@ class TransDownloadFragment : Fragment() {
         }
     }
 
+    //下载中
     @Download.onTaskRunning
     fun taskRunning(task: DownloadTask) {
-        (recyclerView.adapter as DownloadListAdapter).setProgress(task.entity)
+        if (recyclerView.adapter != null) {
+            (recyclerView.adapter as DownloadListAdapter).setProgress(task.entity)
+        }
     }
 
+    //下载完成
     @Download.onTaskComplete
-    fun taskComplete(task: DownloadTask?) {
-        //在这里处理任务完成的状态
+    fun taskComplete(task: DownloadTask) {
+        if (recyclerView.adapter != null) {
+            (recyclerView.adapter as DownloadListAdapter).setProgress(task.entity)
+        }
     }
 }
