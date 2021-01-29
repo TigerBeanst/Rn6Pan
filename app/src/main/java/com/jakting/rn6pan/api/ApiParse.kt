@@ -1,10 +1,53 @@
 package com.jakting.rn6pan.api
 
 import com.jakting.rn6pan.api.data.*
+import com.jakting.rn6pan.utils.*
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
+import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.http.*
 
+/**
+ * 封装 RxJava+Retrofit
+ *
+ * @param useAPI
+ * @param onSuccess
+ * @param onError
+ */
+fun accessAPI(
+    useAPI: ApiParse.() -> Any,
+    onSuccess: (Any) -> Unit,
+    onError: (Any) -> Unit
+) {
+    val observable =
+        EncapsulateRetrofit.init().useAPI() as Observable<*>
+    observable.subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe({ AnyApiObject ->
+            onSuccess(AnyApiObject)
+        }) { t ->
+            t.printStackTrace()
+            onError(t)
+        }
+}
+
+/**
+ * DEMO
+accessAPI(
+{
+getFileOrDirectoryList(getPostBody(jsonForPost))
+}, { objectReturn ->
+val fileOrDirectoryList = objectReturn as FileOrDirectoryList
+logd("onNext // getFileOrDirectoryList")
+nowFileOrDirectoryList = fileOrDirectoryList
+setFileListAdapter()
+}) {
+logd("onError // getFileOrDirectoryList")
+toast(getString(R.string.action_fail))
+}
+ */
 
 interface ApiParse {
 
@@ -60,12 +103,15 @@ interface ApiParse {
     //v3/21.新文件/080.文件星标管理.md
     //修改星标（目前仅支持修改名字）
     @PUT("labels/{identity}")
-    fun modifyLabelName(@Body requestBody: RequestBody, @Path("identity") identity:Int): Observable<FileLabel>
+    fun modifyLabelName(
+        @Body requestBody: RequestBody,
+        @Path("identity") identity: Int
+    ): Observable<FileLabel>
 
     //v3/21.新文件/080.文件星标管理.md
     //删除星标
     @DELETE("labels/{identity}")
-    fun deleteLabel(@Path("identity") identity:Int): Observable<FileActionReturn>
+    fun deleteLabel(@Path("identity") identity: Int): Observable<FileActionReturn>
 
     //v3/21.新文件/080.文件星标管理.md
     //创建文件星标

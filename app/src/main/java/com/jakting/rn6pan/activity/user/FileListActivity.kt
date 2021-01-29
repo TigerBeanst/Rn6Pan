@@ -31,6 +31,8 @@ import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.adapter.TransmissionAdapter
+import com.jakting.rn6pan.api.accessAPI
+import com.jakting.rn6pan.api.data.FileLabel
 import com.jakting.rn6pan.api.data.FileLabelItem
 import com.jakting.rn6pan.api.data.FileLabelList
 import com.jakting.rn6pan.api.data.FileOrDirectoryList
@@ -129,7 +131,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         }
     }
 
-    //初始化 FAB
+    /**
+     * 初始化 FAB
+     *
+     */
     private fun initFAB() {
         showAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_up)
         hideAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_down)
@@ -174,7 +179,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 //        file_fab_transmission_button.setOnClickListener { }
     }
 
-    //显示 FAB 菜单
+    /**
+     * 显示 FAB 菜单
+     *
+     */
     private fun showMenu() {
         file_fab.startAnimation(showMenuAnimation)
         file_fab.setImageDrawable(
@@ -192,7 +200,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         isShowFabMenu = true
     }
 
-    //隐藏 FAB 菜单
+    /**
+     * 隐藏 FAB 菜单
+     *
+     */
     fun hideMenu() {
         file_fab.startAnimation(hideMenuAnimation)
         file_fab.setImageDrawable(
@@ -210,7 +221,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         isShowFabMenu = false
     }
 
-    //初始化文件列表
+    /**
+     * 初始化文件列表
+     *
+     */
     private fun initFileOrDirectoryList() {
         val jsonForPost =
             "{\"parentPath\":\"${parentPathList[parentPathList.size - 1]}\"," +
@@ -223,67 +237,62 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                             (if (ctimeOrderBy != "") "[\"ctime\",\"$ctimeOrderBy\"]" else ""))
                     } else "") +
                     "]}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().getFileOrDirectoryList(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileOrDirectoryList ->
+        accessAPI(
+            {
+                getFileOrDirectoryList(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val fileOrDirectoryList = objectReturn as FileOrDirectoryList
                 logd("onNext // getFileOrDirectoryList")
                 nowFileOrDirectoryList = fileOrDirectoryList
                 setFileListAdapter()
-            }) { t ->
-                logd("onError // getFileOrDirectoryList")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {
+            toast(getString(R.string.action_fail))
+        }
     }
 
-    //初始化星标
+    /**
+     * 初始化星标
+     *
+     */
     private fun initStarLabels() {
-        val observable =
-            EncapsulateRetrofit.init().getLabelsList()
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileLabelList ->
-                logd("onNext // getLabelsList")
+        accessAPI(
+            {
+                getLabelsList()
+            }, { objectReturn ->
+                val fileLabelList = objectReturn as FileLabelList
+                logd("onNext // getFileOrDirectoryList")
                 this.fileLabelList = fileLabelList
-            }) { t ->
-                logd("onError // getLabelsList")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {
+            toast(getString(R.string.action_fail))
+        }
     }
 
-    //创建文件夹
+    /**
+     * 创建文件夹
+     *
+     * @param newFolderName
+     */
     private fun createDirectory(newFolderName: String) {
         val jsonForPost =
             "{\"parent\":\"${nowFileOrDirectoryList.parent.identity}\"," +
                     "\"path\":\"$newFolderName\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().createDirectory(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ CreateDirectory ->
+        accessAPI(
+            {
+                createDirectory(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // createDirectory")
                 toast(getString(R.string.file_create_folder_success))
                 file_list_swipeLayout.autoRefresh()
                 hideMenu()
-            }) { t ->
-                logd("onError // createDirectory")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {
+            toast(getString(R.string.action_fail))
+        }
     }
 
-    //设置文件列表适配器
+    /**
+     * 设置文件列表适配器
+     *
+     */
     private fun setFileListAdapter() {
         val layoutManager = LinearLayoutManager(this)
         mBinding.fileListRecyclerView.layoutManager = layoutManager
@@ -318,7 +327,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         labelFilter = 0
     }
 
-    //初始化底部导航菜单
+    /**
+     * 初始化底部导航菜单
+     *
+     */
     private fun initBottomBarNavIcon() {
         bottomAppBar.setOnMenuItemClickListener {
             if (isShowFabMenu) hideMenu()
@@ -385,13 +397,19 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         }
     }
 
-    //回退到上一个文件夹
+    /**
+     * 回退到上一个文件夹
+     *
+     */
     private fun backToParentPath() {
         isUpToParentPath = true
         file_list_swipeLayout.autoRefresh()
     }
 
-    //初始化向导
+    /**
+     * 初始化向导
+     *
+     */
     private fun initSpotlight() {
         val targets = ArrayList<Target>()
         val targetlayout = layoutInflater.inflate(R.layout.layout_target, FrameLayout(this))
@@ -509,7 +527,12 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 //        return null
 //    }
 
-    //获取 BottomBar 图标的 View
+    /**
+     * 获取 BottomBar 图标的 View
+     *
+     * @param drawable
+     * @return
+     */
     private fun getBottomBarItemView(drawable: Drawable?): View? {
         val size: Int = bottomAppBar.childCount
 //        logd("获取底部栏的详情：size为$size")
@@ -526,7 +549,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         return null
     }
 
-    //点击 BottomBar 中的 传输列表
+    /**
+     * 点击 BottomBar 中的 传输列表
+     *
+     */
     private fun clickBottomBarTransmission() {
         val view: View =
             LayoutInflater.from(this).inflate(R.layout.content_file_transmission, null)
@@ -540,7 +566,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         initAriaDownloader(view)
     }
 
-    //点击 Toolbar 中的 星标
+    /**
+     * 点击 Toolbar 中的 星标
+     *
+     */
     private fun clickMenuStar() {
         val arrayOfLabelList = mutableListOf<FileLabelItem>()
         for (fileLabel in fileLabelList.dataList) {
@@ -701,19 +730,19 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .show()
     }
 
-    //创建星标
+    /**
+     * 创建星标
+     *
+     * @param name
+     */
     private fun createStarLabel(name: String) {
         val jsonForPost =
             "{\"name\":\"$name\",\"identity\":$colorInt}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().createLabel(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileLabel ->
+        accessAPI(
+            {
+                createLabel(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val fileLabel = objectReturn as FileLabel
                 logd("onNext // createLabel")
                 if (fileLabel.name != name) {
                     toast(getString(R.string.file_toolbar_star_add_fail))
@@ -721,51 +750,51 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                     toast(getString(R.string.file_toolbar_star_add_success))
                     initStarLabels()
                 }
-            }) { t ->
-                logd("onError // createLabel")
-                t.printStackTrace()
-                toast(getString(R.string.file_toolbar_star_add_fail_server))
-            }
+            }) {
+            toast(getString(R.string.file_toolbar_star_add_fail_server))
+        }
     }
 
-    //修改星标名称
+    /**
+     * 修改星标名称
+     *
+     * @param identity
+     * @param name
+     */
     private fun modifyStarLabelName(identity: Int, name: String) {
         val jsonForPost =
             "{\"name\":\"${name}\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().modifyLabelName(createDestinationPostBody, identity)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ FileLabel ->
+
+        accessAPI(
+            {
+                modifyLabelName(getPostBody(jsonForPost), identity)
+            }, {
                 logd("onNext // modifyStarLabelsName")
                 toast(getString(R.string.file_toolbar_star_filter_modify_name_success))
                 initStarLabels()
-            }) { t ->
-                logd("onError // modifyStarLabelsName")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // modifyStarLabelsName")
+            toast(getString(R.string.action_fail))
+        }
     }
 
-    //删除星标
+    /**
+     * 删除星标
+     *
+     * @param identity
+     */
     private fun deleteLabel(identity: Int) {
-        val observable =
-            EncapsulateRetrofit.init().deleteLabel(identity)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ FileLabelForDelete ->
+        accessAPI(
+            {
+                deleteLabel(identity)
+            }, {
                 logd("onNext // deleteLabel")
                 toast(getString(R.string.file_toolbar_star_delete_success))
                 file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // deleteLabel")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // deleteLabel")
+            toast(getString(R.string.action_fail))
+        }
     }
 
     override fun onBackPressed() {
@@ -802,6 +831,11 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     }
 
+    /**
+     * 初始化 Aria
+     *
+     * @param view
+     */
     private fun initAriaDownloader(view: View) {
         view.viewPager.adapter = TransmissionAdapter(this)
         TabLayoutMediator(view.tabLayout, view.viewPager) { tab, position ->

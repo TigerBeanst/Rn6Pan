@@ -4,6 +4,9 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.HttpException
 import java.math.BigDecimal
 
@@ -70,5 +73,11 @@ fun getErrorString(t: Throwable): String {
 
 fun isStringIllegal(string: String): Boolean { //6盘专用
     return (string.trim().isEmpty() || string.contains(":"))
+}
+
+fun getPostBody(jsonForPost: String): RequestBody {
+    return RequestBody.create(
+        MediaType.parse("application/json"), jsonForPost
+    )
 }
 
