@@ -5,7 +5,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.jakting.rn6pan.api.data.UserInfo
-import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
 
 class MyApplication : Application() {
     @SuppressLint("CommitPrefEdits")

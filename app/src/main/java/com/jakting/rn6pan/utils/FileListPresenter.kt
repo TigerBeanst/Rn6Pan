@@ -10,9 +10,9 @@ import com.afollestad.materialcab.createCab
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.player.PlayerActivity
+import com.jakting.rn6pan.activity.user.FileListActivity
 import com.jakting.rn6pan.adapter.FileListAdapter
 import com.jakting.rn6pan.api.data.FileOrDirectory
-import com.jakting.rn6pan.activity.user.FileListActivity
 import com.maning.imagebrowserlibrary.ImageEngine
 import com.maning.imagebrowserlibrary.MNImageBrowser
 import com.maning.imagebrowserlibrary.model.ImageBrowserConfig

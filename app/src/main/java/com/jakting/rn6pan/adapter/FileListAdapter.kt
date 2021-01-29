@@ -1,8 +1,6 @@
 package com.jakting.rn6pan.adapter
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -19,9 +17,11 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ObservableBoolean
 import androidx.recyclerview.widget.RecyclerView
 import com.arialyy.aria.core.Aria
+import com.arialyy.aria.core.download.DownloadEntity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.gson.Gson
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.user.FileListActivity
 import com.jakting.rn6pan.api.data.FileLabelItem
@@ -29,12 +29,15 @@ import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.databinding.ItemFileOrDirectoryBinding
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
+import com.jakting.rn6pan.utils.database.DownloadListTable
 import com.jakting.rn6pan.utils.download.getNameFromUrl
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.litepal.LitePal
+import org.litepal.extension.find
 import java.text.SimpleDateFormat
 
 
@@ -124,7 +127,49 @@ class FileListAdapter(
                 //点击更多
                 when (it.itemId) {
                     R.id.menu_file_more_download -> {
-                        getDownloadAddress(fileOrDirectory.identity)
+                        //判断此任务是否已经下载过
+                        val downloadListTable = LitePal.where(
+                            "fileIdentity = ?",
+                            fileOrDirectory.identity
+                        )
+                            .find<DownloadListTable>()
+                        if (downloadListTable.isNotEmpty()) {
+                            //此文件已创建过本地下载任务
+                            logd("此文件已创建过本地下载任务")
+                            //获取此下载任务实体
+                            val downloadEntity: DownloadEntity =
+                                Aria.download(parentContext)
+                                    .getDownloadEntity(downloadListTable[0].fileTaskId)
+                            //创建对话框对不同情况进行提示
+                            val dialog = MaterialAlertDialogBuilder(parentContext)
+                            dialog.apply {
+                                when (downloadEntity.state) {
+                                    1 -> { //完成
+                                        setTitle(parentContext.getString(R.string.transmission_download_dialog_finish_title))
+                                        setMessage(parentContext.getString(R.string.transmission_download_dialog_finish_msg))
+                                        setNegativeButton(parentContext.getString(R.string.cancel)) { _, _ ->
+                                        }
+                                        setPositiveButton(parentContext.getString(R.string.ok)) { _, _ ->
+                                        }
+                                    }
+                                    2 -> { //停止
+                                        setTitle(parentContext.getString(R.string.transmission_download_dialog_resume_title))
+                                        setMessage(parentContext.getString(R.string.transmission_download_dialog_resume_msg))
+                                        setNegativeButton(parentContext.getString(R.string.cancel)) { _, _ ->
+                                        }
+                                        setPositiveButton(parentContext.getString(R.string.ok)) { _, _ ->
+                                        }
+                                    }
+                                    4 -> { //正在下载
+                                        toast(parentContext.getString(R.string.transmission_download_dialog_doing))
+                                    }
+                                }
+                                show()
+                            }
+                        } else {
+                            //此文件未创建过本地下载任务
+                            getDownloadAddress(fileOrDirectory.identity)
+                        }
                     }
                     R.id.menu_file_more_download_to -> {
                         toast("test")
@@ -448,9 +493,10 @@ class FileListAdapter(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ fileOrDirectory ->
                 logd("onNext // getDownloadAddress")
-                Aria.download(parentContext)
+                val taskId = Aria.download(parentContext)
                     .load(fileOrDirectory.downloadAddress)
                     .ignoreCheckPermissions()
+                    .setExtendField(Gson().toJson(fileOrDirectory))
                     .setFilePath(
                         parentContext.getExternalFilesDir("downloads")
                             .toString() + "/" + getNameFromUrl(
@@ -458,6 +504,15 @@ class FileListAdapter(
                         )
                     )    //文件保存路径
                     .create()
+                if (taskId != (-1).toLong()) {
+                    val downloadListTable = DownloadListTable()
+                    downloadListTable.fileTaskId = taskId
+                    downloadListTable.fileIdentity = fileOrDirectory.identity
+                    downloadListTable.fileName = fileOrDirectory.name
+                    downloadListTable.filePath = fileOrDirectory.path
+                    downloadListTable.save()
+                }
+
             }) { t ->
                 logd("onError // getDownloadAddress")
                 val errorString: String = getErrorString(t)

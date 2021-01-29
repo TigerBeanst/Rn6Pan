@@ -57,11 +57,27 @@ class TransDownloadFragment : Fragment() {
         }
     }
 
+    //开始下载
+    @Download.onTaskStart
+    fun taskStart(task: DownloadTask) {
+        if (recyclerView.adapter != null) {
+            (recyclerView.adapter as DownloadListAdapter).updateProgress(task.entity)
+        }
+    }
+
+    //恢复下载
+    @Download.onTaskResume
+    fun taskResume(task: DownloadTask) {
+        if (recyclerView.adapter != null) {
+            (recyclerView.adapter as DownloadListAdapter).updateProgress(task.entity)
+        }
+    }
+
     //下载中
     @Download.onTaskRunning
     fun taskRunning(task: DownloadTask) {
         if (recyclerView.adapter != null) {
-            (recyclerView.adapter as DownloadListAdapter).setProgress(task.entity)
+            (recyclerView.adapter as DownloadListAdapter).updateProgress(task.entity)
         }
     }
 
@@ -69,7 +85,15 @@ class TransDownloadFragment : Fragment() {
     @Download.onTaskComplete
     fun taskComplete(task: DownloadTask) {
         if (recyclerView.adapter != null) {
-            (recyclerView.adapter as DownloadListAdapter).setProgress(task.entity)
+            (recyclerView.adapter as DownloadListAdapter).updateProgress(task.entity)
+        }
+    }
+
+    //任务删除
+    @Download.onTaskCancel
+    fun taskCancel(task: DownloadTask) {
+        if (recyclerView.adapter != null) {
+            (recyclerView.adapter as DownloadListAdapter).updateProgress(task.entity)
         }
     }
 }

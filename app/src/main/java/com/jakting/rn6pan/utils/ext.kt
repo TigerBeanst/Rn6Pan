@@ -4,8 +4,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.JsonParser
-import com.jakting.rn6pan.api.data.FileLabelItem
 import retrofit2.HttpException
 import java.math.BigDecimal
 

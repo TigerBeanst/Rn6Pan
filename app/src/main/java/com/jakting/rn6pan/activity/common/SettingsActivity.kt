@@ -1,13 +1,11 @@
 package com.jakting.rn6pan.activity.common
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.jakting.rn6pan.BaseActivity
-import com.jakting.rn6pan.BuildConfig
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.MyApplication.Companion.settingSharedPreferencesEditor
 import com.jakting.rn6pan.utils.toast

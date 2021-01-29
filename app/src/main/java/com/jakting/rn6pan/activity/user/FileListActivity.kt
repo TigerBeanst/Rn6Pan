@@ -36,6 +36,7 @@ import com.jakting.rn6pan.api.data.FileLabelList
 import com.jakting.rn6pan.api.data.FileOrDirectoryList
 import com.jakting.rn6pan.databinding.ActivityUserFileListBinding
 import com.jakting.rn6pan.utils.*
+import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
 import com.jakting.rn6pan.utils.MyApplication.Companion.ctimeOrderBy
 import com.jakting.rn6pan.utils.MyApplication.Companion.defaultOrder
 import com.jakting.rn6pan.utils.MyApplication.Companion.labelFilter
@@ -64,6 +65,7 @@ import kotlinx.android.synthetic.main.layout_target.*
 import kotlinx.android.synthetic.main.layout_target.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
+import org.litepal.LitePal
 
 
 class FileListActivity : BaseActivity(), ColorPickerDialogListener {
@@ -108,6 +110,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         mPresenter = Presenter(this)
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        LitePal.initialize(appContext)
         initFAB()
         initBottomBarNavIcon()
         //下拉刷新

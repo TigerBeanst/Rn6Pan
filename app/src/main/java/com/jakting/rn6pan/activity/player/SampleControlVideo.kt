@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
-import com.jakting.rn6pan.utils.logd
 import com.shuyu.gsyvideoplayer.utils.CommonUtil
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer

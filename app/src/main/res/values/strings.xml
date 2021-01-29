@@ -104,6 +104,12 @@
 
     <!--transmission-->
     <string name="transmission_download_title">下载</string>
+    <string name="transmission_download_finish">下载完成</string>
+    <string name="transmission_download_dialog_finish_title">下载已完成</string>
+    <string name="transmission_download_dialog_finish_msg">您在此前执行过对此文件的下载操作，且已下载完成。是否需要重新下载文件？</string>
+    <string name="transmission_download_dialog_resume_title">下载已暂停</string>
+    <string name="transmission_download_dialog_resume_msg">您在此前执行过对此文件的下载操作，但暂未下载完成。是否要继续下载文件？此操作不会刷新下载地址。</string>
+    <string name="transmission_download_dialog_doing">此文件正在下载中</string>
     <string name="transmission_download_delete">删除</string>
     <string name="transmission_download_open_with">打开方式</string>
     <string name="transmission_download_need_permission">此应用需要获取 SD 卡权限。请放心，下载目录将完全符合 Android 标准。</string>

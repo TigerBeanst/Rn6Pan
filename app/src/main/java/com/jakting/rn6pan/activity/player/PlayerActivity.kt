@@ -2,11 +2,6 @@ package com.jakting.rn6pan.activity.player
 
 import android.os.Bundle
 import android.view.View
-import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-import android.view.View.SYSTEM_UI_FLAG_IMMERSIVE
-import android.view.WindowInsets
-import android.view.WindowInsetsController
-import androidx.core.view.doOnLayout
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.utils.EncapsulateRetrofit
