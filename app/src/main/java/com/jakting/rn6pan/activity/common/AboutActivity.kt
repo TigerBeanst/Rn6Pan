@@ -1,8 +1,6 @@
 package com.jakting.rn6pan.activity.common
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.res.Configuration
 import android.widget.ImageView
 import android.widget.TextView
 import com.drakeet.about.*
@@ -20,12 +18,6 @@ class AboutActivity : AbsAboutActivity() {
         icon.setImageResource(R.mipmap.ic_launcher)
         slogan.text = getString(R.string.app_name)
         version.text = "v" + BuildConfig.VERSION_NAME
-    }
-
-    private fun getDarkModeStatus(context: Context): Boolean {
-        val mode: Int =
-            context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        return mode == Configuration.UI_MODE_NIGHT_YES
     }
 
     override fun onItemsCreated(items: MutableList<Any>) {

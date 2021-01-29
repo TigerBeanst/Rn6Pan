@@ -24,6 +24,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.user.FileListActivity
+import com.jakting.rn6pan.api.accessAPI
 import com.jakting.rn6pan.api.data.FileLabelItem
 import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.databinding.ItemFileOrDirectoryBinding
@@ -31,11 +32,7 @@ import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.appContext
 import com.jakting.rn6pan.utils.database.DownloadListTable
 import com.jakting.rn6pan.utils.download.getNameFromUrl
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import org.litepal.LitePal
 import org.litepal.extension.find
 import java.text.SimpleDateFormat
@@ -62,15 +59,24 @@ class FileListAdapter(
         logd("mBooleanList长度为：" + mBooleanList.size)
     }
 
-
+    /**
+     * 为数据绑定添加监听器
+     * @param listener ItemListener
+     */
     fun setListener(listener: ItemListener) {
         mListener = listener
     }
 
+    /**
+     * 启动 ActionMode
+     */
     fun startActionMode() {
         mSwitch.set(true)
     }
 
+    /**
+     * 停止 ActionMode
+     */
     fun stopActionMode() {
         mSwitch.set(false)
         mBooleanList.fill(ObservableBoolean(false))
@@ -260,7 +266,10 @@ class FileListAdapter(
 
     override fun getItemCount() = fileOrDirectoryList.size
 
-    //点击星标
+    /**
+     * 点击星标
+     * @param fileOrDirectory FileOrDirectory
+     */
     private fun clickMoreMenuStar(fileOrDirectory: FileOrDirectory) {
         val arrayOfLabelList = mutableListOf<FileLabelItem>()
         for (fileLabel in (parentContext as FileListActivity).fileLabelList.dataList) {
@@ -328,7 +337,11 @@ class FileListAdapter(
             .show()
     }
 
-    //点击重命名
+    /**
+     * 点击重命名
+     * @param fileOrDirectory FileOrDirectory
+     * @param itemView View
+     */
     private fun clickMoreMenuRename(fileOrDirectory: FileOrDirectory, itemView: View) {
         val baseView = itemView.findViewById<View>(R.id.dialog_layout)
         val viewInflated: View = LayoutInflater.from(parentContext)
@@ -361,65 +374,60 @@ class FileListAdapter(
             .show()
     }
 
-    //添加星标
+    /**
+     * 添加星标
+     * @param identity String
+     * @param label Int
+     */
     private fun addLabel(identity: String, label: Int) {
         val jsonForPost =
             "{\"sourceIdentity\":[\"$identity\"],\"label\":$label}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().addLabel(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileActionReturn ->
+        accessAPI(
+            {
+                addLabel(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // addLabel")
                 toast(parentContext.getString(R.string.file_more_star_set_success))
                 (parentContext as FileListActivity).file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // addLabel")
-                t.printStackTrace()
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // addLabel")
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
-    //移除星标
+    /**
+     * 移除星标
+     * @param identity String
+     */
     private fun removeLabel(identity: String) {
         val jsonForPost =
             "{\"sourceIdentity\":[\"$identity\"]}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().removeLabel(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileActionReturn ->
+        accessAPI(
+            {
+                removeLabel(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // removeLabel")
                 toast(parentContext.getString(R.string.file_more_star_remove_success))
                 (parentContext as FileListActivity).file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // removeLabel")
-                t.printStackTrace()
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // removeLabel")
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
-    //重命名文件
+    /**
+     * 重命名文件
+     * @param identity String
+     * @param name String
+     * @param isDirectory Boolean
+     */
     private fun renameFile(identity: String, name: String, isDirectory: Boolean) {
         val jsonForPost =
             "{\"identity\":\"$identity\",\"name\":\"$name\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().renameFile(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileActionReturn ->
+        accessAPI(
+            {
+                renameFile(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // renameFile")
                 if (isDirectory) {
                     toast(parentContext.getString(R.string.file_more_rename_success_directory))
@@ -427,71 +435,66 @@ class FileListAdapter(
                     toast(parentContext.getString(R.string.file_more_rename_success_file))
                 }
                 (parentContext as FileListActivity).file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // renameFile")
-                t.printStackTrace()
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // renameFile")
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
-    //移动文件
+    /**
+     * 移动文件（没写完）
+     * @param identity String
+     * @param name String
+     */
     private fun moveFile(identity: String, name: String) {
         val jsonForPost =
             "{\"sourceIdentity\":[\"$identity\"]}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().removeLabel(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileActionReturn ->
+        accessAPI(
+            {
+                removeLabel(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // removeLabel")
                 toast(parentContext.getString(R.string.file_more_star_remove_success))
                 (parentContext as FileListActivity).file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // removeLabel")
-                t.printStackTrace()
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // removeLabel")
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
-    //复制文件
+    /**
+     * 复制文件（没写完）
+     * @param identity String
+     * @param name String
+     */
     private fun copyFile(identity: String, name: String) {
         val jsonForPost =
             "{\"sourceIdentity\":[\"$identity\"]}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().removeLabel(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileActionReturn ->
+
+        accessAPI(
+            {
+                removeLabel(getPostBody(jsonForPost))
+            }, {
                 logd("onNext // removeLabel")
                 toast(parentContext.getString(R.string.file_more_star_remove_success))
                 (parentContext as FileListActivity).file_list_swipeLayout.autoRefresh()
-            }) { t ->
-                logd("onError // removeLabel")
-                t.printStackTrace()
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            }) {
+            logd("onError // removeLabel")
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
-    //获取下载地址
+    /**
+     * 获取下载地址
+     * @param videoIdentity String
+     */
     private fun getDownloadAddress(videoIdentity: String) {
         val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileOrDirectory ->
+        accessAPI(
+            {
+                getDownloadAddress(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val fileOrDirectory = objectReturn as FileOrDirectory
                 logd("onNext // getDownloadAddress")
                 val taskId = Aria.download(parentContext)
                     .load(fileOrDirectory.downloadAddress)
@@ -512,13 +515,12 @@ class FileListAdapter(
                     downloadListTable.filePath = fileOrDirectory.path
                     downloadListTable.save()
                 }
-
             }) { t ->
-                logd("onError // getDownloadAddress")
-                val errorString: String = getErrorString(t)
-                logd(errorString)
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            logd("onError // getDownloadAddress")
+            val errorString: String = getErrorString(t)
+            logd(errorString)
+            toast(parentContext.getString(R.string.action_fail))
+        }
     }
 
 }

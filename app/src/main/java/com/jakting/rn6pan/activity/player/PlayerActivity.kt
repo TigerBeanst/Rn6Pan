@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
-import com.jakting.rn6pan.utils.EncapsulateRetrofit
+import com.jakting.rn6pan.api.accessAPI
+import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.jakting.rn6pan.utils.MyApplication.Companion.nowTimeStamp
 import com.jakting.rn6pan.utils.getErrorString
+import com.jakting.rn6pan.utils.getPostBody
 import com.jakting.rn6pan.utils.logd
 import com.jakting.rn6pan.utils.toast
 import com.shuyu.gsyvideoplayer.GSYVideoManager
@@ -16,11 +18,7 @@ import com.shuyu.gsyvideoplayer.player.IjkPlayerManager
 import com.shuyu.gsyvideoplayer.player.PlayerFactory
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.player_control_video.view.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 
 
 class PlayerActivity : BaseActivity() {
@@ -35,10 +33,13 @@ class PlayerActivity : BaseActivity() {
         val decorView: View = this.window.decorView
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
         CacheFactory.setCacheManager(ProxyCacheManager::class.java)
-        init()
+        initPlayer()
     }
 
-    private fun init() {
+    /**
+     * 初始化播放器
+     */
+    private fun initPlayer() {
         videoPlayer = findViewById<View>(R.id.video_player) as SampleControlVideo
         //增加title
         videoPlayer!!.titleTextView.visibility = View.VISIBLE
@@ -65,9 +66,6 @@ class PlayerActivity : BaseActivity() {
                 String.format(getString(R.string.player_change_play_speed), playSpeed)
             videoPlayer!!.setSpeed(playSpeed, true)
         }
-//        videoPlayer!!.setBackFromFullScreenListener {
-//            mActivity.onBackPressed()
-//        }
         //设置旋转
         orientationUtils = OrientationUtils(this, videoPlayer)
         //是否可以滑动调整
@@ -82,36 +80,38 @@ class PlayerActivity : BaseActivity() {
         getVideoPreviewURLByDownloadAddress(videoIdentity!!)
     }
 
+    /**
+     * 使用下载地址作为视频预览地址
+     * @param videoIdentity String
+     */
     private fun getVideoPreviewURLByDownloadAddress(videoIdentity: String) {
         val jsonForPost = "{\"identity\":\"$videoIdentity\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ fileOrDirectory ->
+        accessAPI(
+            {
+                getDownloadAddress(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val fileOrDirectory = objectReturn as FileOrDirectory
                 logd("onNext // getVideoPreviewURLByDownloadAddress")
                 nowTimeStamp = System.currentTimeMillis() / 1000
                 startPlay(fileOrDirectory.downloadAddress, fileOrDirectory.name)
-            }) { t ->
-                logd("onError // getVideoPreviewURLByDownloadAddress")
-                val errorString: String = getErrorString(t)
-                logd(errorString)
-                toast(getString(R.string.action_fail))
-            }
+            }) {t ->
+            logd("onError // getVideoPreviewURLByDownloadAddress")
+            val errorString: String = getErrorString(t)
+            logd(errorString)
+            toast(getString(R.string.action_fail))
+        }
     }
 
-
+    /**
+     * 播放器开始播放
+     * @param playAddress String
+     * @param title String
+     */
     private fun startPlay(playAddress: String, title: String) {
         logd("此时播放地址：$playAddress")
         videoPlayer!!.setUp(playAddress, true, title)
         videoPlayer!!.startPlayLogic()
     }
-
-
 
     override fun onPause() {
         super.onPause()
@@ -127,16 +127,10 @@ class PlayerActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         GSYVideoManager.releaseAllVideos()
-//        if (orientationUtils != null) orientationUtils!!.releaseListener()
     }
 
 
     override fun onBackPressed() {
-        //先返回正常状态。如果屏幕是横屏，则模拟触碰全屏按钮
-//        if (orientationUtils!!.screenType == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//            videoPlayer!!.fullscreenButton.performClick()
-//            return
-//        }
         //释放所有
         videoPlayer!!.setVideoAllCallBack(null)
         super.onBackPressed()

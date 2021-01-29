@@ -15,6 +15,11 @@ import com.jakting.rn6pan.activity.common.SettingsActivity
 import com.jakting.rn6pan.activity.user.FileListActivity
 import com.jakting.rn6pan.activity.user.LoginActivity
 import com.jakting.rn6pan.activity.user.UserActivity
+import com.jakting.rn6pan.api.accessAPI
+import com.jakting.rn6pan.api.data.OfflineQuota
+import com.jakting.rn6pan.api.data.UserInfo
+import com.jakting.rn6pan.api.data.checkDestination
+import com.jakting.rn6pan.api.data.createDestination
 import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.CookiesUtils.Companion.saveCookie
 import com.jakting.rn6pan.utils.MyApplication.Companion.COOKIES
@@ -22,8 +27,6 @@ import com.jakting.rn6pan.utils.MyApplication.Companion.DESTINATION
 import com.jakting.rn6pan.utils.MyApplication.Companion.LOGIN_STATUS
 import com.jakting.rn6pan.utils.MyApplication.Companion.STATE
 import com.jakting.rn6pan.utils.MyApplication.Companion.TOKEN
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -33,7 +36,7 @@ import java.text.SimpleDateFormat
 class MainActivity : BaseActivity(), View.OnClickListener {
 
     companion object {
-        val createDestinationPostBody =
+        val createDestinationPostBody: RequestBody =
             RequestBody.create(
                 MediaType.parse("application/json"),
                 "{\"ts\":123}"
@@ -71,12 +74,17 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         main_about_layout.setOnClickListener(this)
     }
 
+    /**
+     * 获取用户信息（并修改 UI 上的相关内容）
+     * @param isPressRefresh Boolean
+     */
     @SuppressLint("SetTextI18n", "SimpleDateFormat")
     private fun getUserInfo(isPressRefresh: Boolean) {
-        val observable = EncapsulateRetrofit.init().getUserInfo(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ userInfo ->
+        accessAPI(
+            {
+                getUserInfo(createDestinationPostBody)
+            }, { objectReturn ->
+                val userInfo = objectReturn as UserInfo
                 logd("onNext // getUserInfo")
                 LOGIN_STATUS = 1
                 MyApplication.userInfo = userInfo
@@ -120,40 +128,45 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 main_file_manager_second_title.text =
                     "配额（" + getPrintSize(userInfo.spaceUsed) + "/" + getPrintSize(userInfo.spaceCapacity) + "）"
                 getOfflineQuota(isPressRefresh)
-            }) { t ->
-                logd("onError // getUserInfo")
-                t.printStackTrace()
-                createDestination()
-            }
+            }) {t ->
+            logd("onError // getUserInfo")
+            t.printStackTrace()
+            createDestination()
+        }
     }
 
+    /**
+     * 创建目标 URL
+     */
     private fun createDestination() {
-        val observable = EncapsulateRetrofit.init().getDestination(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ createDestination ->
+        accessAPI(
+            {
+                getDestination(createDestinationPostBody)
+            }, { objectReturn ->
+                val createDestination = objectReturn as createDestination
                 logd("onNext // createDestination")
                 logd("destination:  " + createDestination.destination)
                 logd("expireTime:   " + createDestination.expireTime.toString())
                 DESTINATION = createDestination.destination
                 checkDestination(DESTINATION)
-            }) { t ->
-                logd("onError // createDestination")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {t ->
+            logd("onError // createDestination")
+            t.printStackTrace()
+            toast(getString(R.string.action_fail))
+        }
     }
 
+    /**
+     * 检查（传入的）目标 URL
+     * @param destination String
+     */
     private fun checkDestination(destination: String) {
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"),
-                "{\"destination\":\"$destination\"}"
-            )
-        val observable = EncapsulateRetrofit.init().getToken(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ checkDestination ->
+        val jsonForPost = "{\"destination\":\"$destination\"}"
+        accessAPI(
+            {
+                getToken(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val checkDestination = objectReturn as checkDestination
                 logd("onNext // checkDestination")
                 if (checkDestination.status != 100) {
                     //未登录
@@ -172,28 +185,33 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                     TOKEN = checkDestination.token
                     getUserInfo(false)
                 }
-            }) { t ->
-                logd("onError // checkDestination")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {t ->
+            logd("onError // checkDestination")
+            t.printStackTrace()
+            toast(getString(R.string.action_fail))
+        }
     }
 
+    /**
+     * 获取离线任务配额
+     * @param isPressRefresh Boolean
+     */
     @SuppressLint("SetTextI18n")
     private fun getOfflineQuota(isPressRefresh: Boolean) {
-        val observable = EncapsulateRetrofit.init().getOfflineQuota(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ offlineQuota ->
+        accessAPI(
+            {
+                getOfflineQuota(createDestinationPostBody)
+            }, { objectReturn ->
+                val offlineQuota = objectReturn as OfflineQuota
                 logd("onNext // OfflineQuota")
                 main_offline_download_second_title.text =
                     "配额（今日已用 ${offlineQuota.dailyUsed} 次，剩余 ${offlineQuota.available} 次/ ${offlineQuota.dailyQuota} 次）"
                 if(isPressRefresh) toast(getString(R.string.main_refresh_success))
-            }) { t ->
-                logd("onError // OfflineQuota")
-                t.printStackTrace()
-                toast(getString(R.string.action_fail))
-            }
+            }) {t ->
+            logd("onError // OfflineQuota")
+            t.printStackTrace()
+            toast(getString(R.string.action_fail))
+        }
     }
 
     override fun onClick(p0: View?) {

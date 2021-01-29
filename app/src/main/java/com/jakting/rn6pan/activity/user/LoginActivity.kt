@@ -1,5 +1,6 @@
 package com.jakting.rn6pan.activity.user
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.webkit.CookieManager
 import android.webkit.WebView
@@ -14,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_user_login.*
 
 class LoginActivity : BaseActivity() {
 
-
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_login)
@@ -27,6 +28,7 @@ class LoginActivity : BaseActivity() {
         login_webview.loadUrl("https://$ACCOUNT_NUDE_URL/login?destination=$DESTINATION&appid=bc088aa5e2ad&response=query&state=1234&lang=zh-CN")
         login_webview.webViewClient = MyWebViewClient()
     }
+
     inner class MyWebViewClient:WebViewClient(){
         override fun onPageFinished(view: WebView, url: String) {
             super.onPageFinished(view, url)

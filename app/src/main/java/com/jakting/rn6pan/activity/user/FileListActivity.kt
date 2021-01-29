@@ -55,8 +55,6 @@ import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.effet.RippleEffect
 import com.takusemba.spotlight.shape.Circle
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
 import kotlinx.android.synthetic.main.content_file_transmission.*
 import kotlinx.android.synthetic.main.content_file_transmission.view.*
@@ -65,8 +63,6 @@ import kotlinx.android.synthetic.main.file_fab_create_folder_layout.*
 import kotlinx.android.synthetic.main.file_fab_upload_layout.*
 import kotlinx.android.synthetic.main.layout_target.*
 import kotlinx.android.synthetic.main.layout_target.view.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import org.litepal.LitePal
 
 
@@ -133,7 +129,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 初始化 FAB
-     *
      */
     private fun initFAB() {
         showAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_up)
@@ -176,12 +171,10 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                 }
                 .show()
         }
-//        file_fab_transmission_button.setOnClickListener { }
     }
 
     /**
      * 显示 FAB 菜单
-     *
      */
     private fun showMenu() {
         file_fab.startAnimation(showMenuAnimation)
@@ -202,7 +195,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 隐藏 FAB 菜单
-     *
      */
     fun hideMenu() {
         file_fab.startAnimation(hideMenuAnimation)
@@ -223,7 +215,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 初始化文件列表
-     *
      */
     private fun initFileOrDirectoryList() {
         val jsonForPost =
@@ -252,7 +243,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 初始化星标
-     *
      */
     private fun initStarLabels() {
         accessAPI(
@@ -269,8 +259,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 创建文件夹
-     *
-     * @param newFolderName
+     * @param newFolderName String
      */
     private fun createDirectory(newFolderName: String) {
         val jsonForPost =
@@ -291,7 +280,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 设置文件列表适配器
-     *
      */
     private fun setFileListAdapter() {
         val layoutManager = LinearLayoutManager(this)
@@ -329,7 +317,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 初始化底部导航菜单
-     *
      */
     private fun initBottomBarNavIcon() {
         bottomAppBar.setOnMenuItemClickListener {
@@ -399,7 +386,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 回退到上一个文件夹
-     *
      */
     private fun backToParentPath() {
         isUpToParentPath = true
@@ -408,7 +394,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 初始化向导
-     *
      */
     private fun initSpotlight() {
         val targets = ArrayList<Target>()
@@ -529,9 +514,8 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 获取 BottomBar 图标的 View
-     *
-     * @param drawable
-     * @return
+     * @param drawable Drawable?
+     * @return View?
      */
     private fun getBottomBarItemView(drawable: Drawable?): View? {
         val size: Int = bottomAppBar.childCount
@@ -551,7 +535,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 点击 BottomBar 中的 传输列表
-     *
      */
     private fun clickBottomBarTransmission() {
         val view: View =
@@ -568,7 +551,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 点击 Toolbar 中的 星标
-     *
      */
     private fun clickMenuStar() {
         val arrayOfLabelList = mutableListOf<FileLabelItem>()
@@ -678,7 +660,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             }
         }
 
-
         dialogForLabelsList = MaterialAlertDialogBuilder(this)
             .setTitle(getString(R.string.file_toolbar_star_filter))
             .setAdapter(adapterDialog) { dialog, item ->
@@ -732,8 +713,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 创建星标
-     *
-     * @param name
+     * @param name String
      */
     private fun createStarLabel(name: String) {
         val jsonForPost =
@@ -757,9 +737,8 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 修改星标名称
-     *
-     * @param identity
-     * @param name
+     * @param identity Int
+     * @param name String
      */
     private fun modifyStarLabelName(identity: Int, name: String) {
         val jsonForPost =
@@ -780,8 +759,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     /**
      * 删除星标
-     *
-     * @param identity
+     * @param identity Int
      */
     private fun deleteLabel(identity: Int) {
         accessAPI(
@@ -827,14 +805,9 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
 
     override fun onDialogDismissed(dialogId: Int) {}
 
-    private fun requestNewDownloadTask(downloadAddress: String) {
-
-    }
-
     /**
      * 初始化 Aria
-     *
-     * @param view
+     * @param view View
      */
     private fun initAriaDownloader(view: View) {
         view.viewPager.adapter = TransmissionAdapter(this)
@@ -856,8 +829,6 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                 }
             }
         }.attach()
-
-
     }
 
 }

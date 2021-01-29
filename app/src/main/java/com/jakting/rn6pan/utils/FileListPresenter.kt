@@ -12,15 +12,12 @@ import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.player.PlayerActivity
 import com.jakting.rn6pan.activity.user.FileListActivity
 import com.jakting.rn6pan.adapter.FileListAdapter
+import com.jakting.rn6pan.api.accessAPI
 import com.jakting.rn6pan.api.data.FileOrDirectory
 import com.maning.imagebrowserlibrary.ImageEngine
 import com.maning.imagebrowserlibrary.MNImageBrowser
 import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_user_file_list.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
 
 interface ItemListener {
     fun onClick(v: View)
@@ -131,23 +128,20 @@ class Presenter(var context: Context) : ItemListener {
         parentContext: Context
     ) {
         val jsonForPost = "{\"identity\":\"$identity\"}"
-        val createDestinationPostBody =
-            RequestBody.create(
-                MediaType.parse("application/json"), jsonForPost
-            )
-        val observable =
-            EncapsulateRetrofit.init().getDownloadAddress(createDestinationPostBody)
-        observable.subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ picturePreview ->
+        accessAPI(
+            {
+                getDownloadAddress(getPostBody(jsonForPost))
+            }, { objectReturn ->
+                val picturePreview = objectReturn as FileOrDirectory
                 logd("onNext // getImagePreview")
                 clickImage(picturePreview.downloadAddress, viewHolder, parentContext)
             }) { t ->
-                logd("onError // getImagePreview")
-                val errorString: String = getErrorString(t)
-                logd(errorString)
-                toast(parentContext.getString(R.string.action_fail))
-            }
+            logd("onError // getImagePreview")
+            val errorString: String = getErrorString(t)
+            logd(errorString)
+            toast(parentContext.getString(R.string.action_fail))
+        }
+
     }
 
 

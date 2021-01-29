@@ -49,18 +49,6 @@ class SettingsActivity : BaseActivity() {
                 toast(getString(R.string.setting_misc_show_guide_toast))
                 true
             }
-//            //暗色模式
-//            val darkPreference = findPreference("drop_dark") as ListPreference
-//            if (darkPreference.value == null) {
-//                darkPreference.setValueIndex(0)
-//            }
-//            darkPreference.onPreferenceChangeListener = this
-//            //多语言
-//            val langPreference = findPreference("drop_lang") as ListPreference
-//            if (langPreference.value == null) {
-//                langPreference.setValueIndex(0)
-//            }
-//            langPreference.onPreferenceChangeListener = this
         }
 
         override fun onPause() {
@@ -78,23 +66,9 @@ class SettingsActivity : BaseActivity() {
         override fun onSharedPreferenceChanged(
             sharedPreferences: SharedPreferences,
             key: String
-        ) {
-            //logd("onSharedPreferenceChanged $key")
-//            val sp = activity!!.getSharedPreferences("settings", Context.MODE_PRIVATE)
-//            when (key) {
-//                "drop_dark" -> setDark(sp)
-//                "drop_lang" -> setLang()
-//            }
-        }
+        ) {}
 
         override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
-//            logd(
-//                getString(
-//                    R.string.on_preference_change_toast_message,
-//                    preference.key,
-//                    newValue.toString()
-//                )
-//            )
             return true
         }
     }

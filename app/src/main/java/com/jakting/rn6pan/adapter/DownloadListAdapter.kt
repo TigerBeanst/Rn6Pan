@@ -106,7 +106,10 @@ class DownloadListAdapter(
         }
     }
 
-    //动态设置任务下载进度
+    /**
+     * 动态设置任务下载进度
+     * @param entity DownloadEntity
+     */
     @Synchronized
     fun updateProgress(entity: DownloadEntity) {
         val url = entity.key
@@ -118,7 +121,11 @@ class DownloadListAdapter(
         notifyItemChanged(position, entity)
     }
 
-    //找寻对应下载任务的位置
+    /**
+     * 找寻对应下载任务的位置（下标）
+     * @param url String
+     * @return Int
+     */
     @Synchronized
     private fun indexItem(url: String): Int {
         for (downloadIndex in downloadListModify.indices) {
@@ -128,7 +135,6 @@ class DownloadListAdapter(
         }
         return -1
     }
-
 
     override fun getItemCount() = downloadListModify.size
 
