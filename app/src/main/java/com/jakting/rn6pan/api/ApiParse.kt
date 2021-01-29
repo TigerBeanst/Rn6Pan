@@ -9,7 +9,7 @@ import okhttp3.RequestBody
 import retrofit2.http.*
 
 /**
- * 封装 RxJava+Retrofit
+ * 再封装 RxJava+Retrofit
  *
  * @param useAPI
  * @param onSuccess
