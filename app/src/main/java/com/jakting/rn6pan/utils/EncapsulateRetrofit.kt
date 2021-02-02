@@ -11,7 +11,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 class EncapsulateRetrofit {
     companion object {
         fun init(): ApiParse {
-
             val okHttpBuilder = OkHttpClient.Builder()
             if (BuildConfig.DEBUG) {
                 val okLogInterceptor = OkLogInterceptor.builder().build()

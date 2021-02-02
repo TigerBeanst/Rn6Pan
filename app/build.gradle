@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'com.google.firebase.crashlytics'
 }
 
 android {
@@ -13,10 +14,8 @@ android {
         applicationId "com.jakting.rn6pan"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 202011170
-        versionName "0.1.0.1"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionCode 202102020
+        versionName "0.1.1.0"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -59,6 +58,10 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.1.1'
     implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
 
+    implementation platform('com.google.firebase:firebase-bom:26.4.0')
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
     implementation 'com.drakeet.about:about:2.4.1'
     implementation 'com.drakeet.multitype:multitype:4.2.0'
 
@@ -76,16 +79,13 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
-    debugImplementation 'com.github.simonpercic:oklog3:2.3.0'
+    implementation 'com.github.simonpercic:oklog3:2.3.0'
     implementation 'com.scwang.smart:refresh-layout-kernel:2.0.1'
     implementation 'com.scwang.smart:refresh-header-material:2.0.1'
+    implementation 'com.scwang.smart:refresh-footer-classics:2.0.3'
 
     implementation 'com.github.takusemba:spotlight:2.0.3'
     implementation 'com.afollestad:material-cab:2.0.1'
     implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'org.litepal.guolindev:core:3.2.2'
-
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }

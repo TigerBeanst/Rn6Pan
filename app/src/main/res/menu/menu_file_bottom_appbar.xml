@@ -11,6 +11,9 @@
         android:title="@string/file_sort_title"
         android:icon="@drawable/ic_baseline_sort_24"
         app:showAsAction="always"/>
-    <item android:contentDescription="@string/main_file_manager_second_title"
-        android:title="@string/main_file_manager_second_title" />
+    <item android:id="@+id/menu_file_search"
+        android:contentDescription="@string/file_search_title"
+        android:title="@string/file_search_title"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="always"/>
 </menu>

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.jakting.rn6pan.api.data.OfflineQuota
 import com.jakting.rn6pan.api.data.UserInfo
 
 class MyApplication : Application() {
@@ -24,9 +25,11 @@ class MyApplication : Application() {
         var STATE = ""
         var TOKEN = ""
         var COOKIES = ""
+        lateinit var offlineQuota: OfflineQuota
         lateinit var userInfo: UserInfo
         var nowTimeStamp:Long = 0
         var parentPathList = arrayListOf<String>("/")
+        var parentChoosePathList = arrayListOf<String>("/")
         var orderFlag = 0 // 0 为 name，1 为 ctime
         var defaultOrder = true
         var labelFilter = 0

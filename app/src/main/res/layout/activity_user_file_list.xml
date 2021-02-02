@@ -43,17 +43,27 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.cooltechworks.views.shimmer.ShimmerRecyclerView
-                android:id="@+id/file_list_recyclerView"
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                app:shimmer_demo_child_count="10"
-                app:shimmer_demo_layout="@layout/item_file_or_directory"
-                app:shimmer_demo_layout_manager_type="linear_vertical"
-                app:shimmer_demo_angle="20"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:layout_height="match_parent">
 
+                <com.cooltechworks.views.shimmer.ShimmerRecyclerView
+                    android:id="@+id/file_list_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:shimmer_demo_angle="20"
+                    app:shimmer_demo_child_count="10"
+                    app:shimmer_demo_layout="@layout/item_file_or_directory"
+                    app:shimmer_demo_layout_manager_type="linear_vertical" />
+            </androidx.core.widget.NestedScrollView>
+
+            <com.scwang.smart.refresh.footer.ClassicsFooter
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srlAccentColor="#888"
+                app:srlClassicsSpinnerStyle="Translate" />
         </com.scwang.smart.refresh.layout.SmartRefreshLayout>
 
         <com.google.android.material.bottomappbar.BottomAppBar
@@ -64,7 +74,7 @@
             android:layout_gravity="bottom"
             app:hideOnScroll="true"
             app:menu="@menu/menu_file_bottom_appbar"
-            app:navigationContentDescription="@string/file_to_parent_folder"
+            app:navigationContentDescription="@string/file_to_parent_home"
             app:navigationIcon="@drawable/ic_baseline_keyboard_capslock_24" />
 
         <LinearLayout
@@ -80,7 +90,7 @@
 
             <include layout="@layout/file_fab_create_folder_layout" />
 
-<!--            <include layout="@layout/file_fab_transmission_layout" />-->
+            <!--            <include layout="@layout/file_fab_transmission_layout" />-->
 
         </LinearLayout>
 

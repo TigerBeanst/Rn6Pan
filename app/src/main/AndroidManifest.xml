@@ -3,6 +3,7 @@
     package="com.jakting.rn6pan">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".utils.MyApplication"
         android:allowBackup="true"
@@ -12,39 +13,62 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.user.offline.OfflineByLinksActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".activity.user.OfflineListActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FileList" />
+        <activity
             android:name=".activity.user.UserActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.user.LoginActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.user.FileListActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.FileList"
-            android:parentActivityName=".MainActivity" />
+            android:theme="@style/AppTheme.FileList" />
+
+        <activity
+            android:name=".activity.common.ChoosePathActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FileList" />
+        <activity
+            android:name=".activity.user.OfflineListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.FileList" />
         <activity
             android:name=".activity.common.SettingsActivity"
-            android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.common.AboutActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.About"
-            android:parentActivityName=".MainActivity" />
+            android:theme="@style/AppTheme.About" />
         <activity
             android:name=".activity.player.PlayerActivity"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme.FullScreen"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            />
+            android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.FullScreen" />
         <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

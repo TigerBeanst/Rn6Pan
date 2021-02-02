@@ -2,6 +2,7 @@ package com.jakting.rn6pan
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -10,11 +11,15 @@ import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.request.RequestOptions
+import com.github.simonpercic.oklog3.OkLogInterceptor
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.jakting.rn6pan.activity.common.AboutActivity
 import com.jakting.rn6pan.activity.common.SettingsActivity
 import com.jakting.rn6pan.activity.user.FileListActivity
 import com.jakting.rn6pan.activity.user.LoginActivity
+import com.jakting.rn6pan.activity.user.OfflineListActivity
 import com.jakting.rn6pan.activity.user.UserActivity
+import com.jakting.rn6pan.api.ApiParse
 import com.jakting.rn6pan.api.accessAPI
 import com.jakting.rn6pan.api.data.OfflineQuota
 import com.jakting.rn6pan.api.data.UserInfo
@@ -27,9 +32,15 @@ import com.jakting.rn6pan.utils.MyApplication.Companion.DESTINATION
 import com.jakting.rn6pan.utils.MyApplication.Companion.LOGIN_STATUS
 import com.jakting.rn6pan.utils.MyApplication.Companion.STATE
 import com.jakting.rn6pan.utils.MyApplication.Companion.TOKEN
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import okhttp3.MediaType
+import okhttp3.OkHttpClient
 import okhttp3.RequestBody
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava3.RxJava3CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 
 
@@ -72,6 +83,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         main_ticket_layout.setOnClickListener(this)
         main_setting_layout.setOnClickListener(this)
         main_about_layout.setOnClickListener(this)
+        checkAppUpdate()
     }
 
     /**
@@ -128,7 +140,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 main_file_manager_second_title.text =
                     "配额（" + getPrintSize(userInfo.spaceUsed) + "/" + getPrintSize(userInfo.spaceCapacity) + "）"
                 getOfflineQuota(isPressRefresh)
-            }) {t ->
+            }) { t ->
             logd("onError // getUserInfo")
             t.printStackTrace()
             createDestination()
@@ -149,7 +161,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 logd("expireTime:   " + createDestination.expireTime.toString())
                 DESTINATION = createDestination.destination
                 checkDestination(DESTINATION)
-            }) {t ->
+            }) { t ->
             logd("onError // createDestination")
             t.printStackTrace()
             toast(getString(R.string.action_fail))
@@ -185,7 +197,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                     TOKEN = checkDestination.token
                     getUserInfo(false)
                 }
-            }) {t ->
+            }) { t ->
             logd("onError // checkDestination")
             t.printStackTrace()
             toast(getString(R.string.action_fail))
@@ -197,17 +209,18 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      * @param isPressRefresh Boolean
      */
     @SuppressLint("SetTextI18n")
-    private fun getOfflineQuota(isPressRefresh: Boolean) {
+    fun getOfflineQuota(isPressRefresh: Boolean) {
         accessAPI(
             {
                 getOfflineQuota(createDestinationPostBody)
             }, { objectReturn ->
                 val offlineQuota = objectReturn as OfflineQuota
+                MyApplication.offlineQuota = offlineQuota
                 logd("onNext // OfflineQuota")
                 main_offline_download_second_title.text =
                     "配额（今日已用 ${offlineQuota.dailyUsed} 次，剩余 ${offlineQuota.available} 次/ ${offlineQuota.dailyQuota} 次）"
-                if(isPressRefresh) toast(getString(R.string.main_refresh_success))
-            }) {t ->
+                if (isPressRefresh) toast(getString(R.string.main_refresh_success))
+            }) { t ->
             logd("onError // OfflineQuota")
             t.printStackTrace()
             toast(getString(R.string.action_fail))
@@ -232,7 +245,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
             }
             main_offline_download_card -> {
-
+                val intent = Intent(this, OfflineListActivity::class.java)
+                startActivity(intent)
             }
             main_ticket_layout -> {
 
@@ -257,5 +271,56 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 getUserInfo(false)
             }
         }
+    }
+
+    private fun checkAppUpdate() {
+        val okHttpBuilder = OkHttpClient.Builder()
+        if (BuildConfig.DEBUG) {
+            val okLogInterceptor = OkLogInterceptor.builder().build()
+            okHttpBuilder.addInterceptor(okLogInterceptor)
+        }
+        val okHttpClient = okHttpBuilder
+            .cookieJar(OkHttpCookieJar())
+            .build()
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://cdn.jsdelivr.net/gh/hjthjthjt/hjthjthjt/Rn6Pan/")
+            .client(okHttpClient)
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.createSynchronous())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val observable =
+            retrofit.create(ApiParse::class.java).getUpdate()
+        observable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ appUpdateData ->
+                if (appUpdateData.versionCode > BuildConfig.VERSION_CODE) {
+                    //有更新
+                    val intent: Intent
+                    MaterialAlertDialogBuilder(this)
+                        .setTitle(getString(R.string.main_update_title))
+                        .setMessage(
+                            String.format(
+                                getString(R.string.main_update_msg),
+                                appUpdateData.category,
+                                appUpdateData.versionName,
+                                appUpdateData.versionCode,
+                                appUpdateData.changelog
+                            )
+                        )
+                        .setNeutralButton(R.string.main_update_button_release) { _, _ ->
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appUpdateData.release)))
+                        }
+                        .setPositiveButton(R.string.main_update_button_direct) { _, _ ->
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appUpdateData.originLink)))
+                        }
+                        .setNegativeButton(R.string.main_update_button_mirror) { _, _ ->
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(appUpdateData.mirrorLink)))
+                        }
+                        .show()
+                }
+            }) { t ->
+                t.printStackTrace()
+
+            }
     }
 }

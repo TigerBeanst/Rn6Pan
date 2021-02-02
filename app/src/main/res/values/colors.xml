@@ -20,4 +20,8 @@
     <color name="colorFileFontSecond">#2C2C2C</color>
 
     <color name="spotlightBackground">#BF000000</color>
+
+    <color name="offlineStatusDone">#70AEA4</color>
+    <color name="offlineStatusError">#F68B94</color>
+    <color name="offlineStatusDoing">#FFFFFF</color>
 </resources>

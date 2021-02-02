@@ -42,6 +42,7 @@ class Presenter(var context: Context) : ItemListener {
              */
             if (fileOrDirectory.directory) {
                 MyApplication.parentPathList.add(fileOrDirectory.path)
+                parentContext.nowOnPage = 0
                 parentContext.file_list_swipeLayout.autoRefresh()
 
             } else {

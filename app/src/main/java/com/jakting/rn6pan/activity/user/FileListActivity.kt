@@ -55,7 +55,9 @@ import com.takusemba.spotlight.Spotlight
 import com.takusemba.spotlight.Target
 import com.takusemba.spotlight.effet.RippleEffect
 import com.takusemba.spotlight.shape.Circle
+import kotlinx.android.synthetic.main.activity_choose_path.*
 import kotlinx.android.synthetic.main.activity_user_file_list.*
+import kotlinx.android.synthetic.main.activity_user_file_list.toolbar
 import kotlinx.android.synthetic.main.content_file_transmission.*
 import kotlinx.android.synthetic.main.content_file_transmission.view.*
 import kotlinx.android.synthetic.main.dialog_edittext.*
@@ -68,6 +70,8 @@ import org.litepal.LitePal
 
 class FileListActivity : BaseActivity(), ColorPickerDialogListener {
     var isShowFabMenu = false
+    var nowOnPage = 0
+    var searchWords = ""
     lateinit var fileLabelList: FileLabelList
     lateinit var fileListAdapter: FileListAdapter
     lateinit var mBinding: ActivityUserFileListBinding
@@ -109,11 +113,14 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         LitePal.initialize(appContext)
-        initFAB()
+        initButton()
         initBottomBarNavIcon()
         //下拉刷新
         file_list_swipeLayout.apply {
             setEnableRefresh(true)
+            setEnableLoadMore(true)
+            setEnableAutoLoadMore(true)
+            setEnableScrollContentWhenLoaded(true)
             setPrimaryColorsId(R.color.colorAccent, R.color.colorPrimary)
             autoRefresh()
         }
@@ -122,15 +129,24 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                 parentPathList.removeAt(parentPathList.size - 1)
                 isUpToParentPath = false
             }
-            initFileOrDirectoryList()
+            bottomAppBar.performShow()
+            nowOnPage = 0
+            initFileOrDirectoryList(false, arrayListOf(false, false))
             initStarLabels()
+        }
+        file_list_swipeLayout.setOnLoadMoreListener {
+            nowOnPage++
+            initFileOrDirectoryList(true, arrayListOf(false, false))
         }
     }
 
     /**
      * 初始化 FAB
      */
-    private fun initFAB() {
+    private fun initButton() {
+        toolbar.setNavigationOnClickListener {
+            onBackPressed()
+        }
         showAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_up)
         hideAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_scale_down)
         showMenuAnimation = AnimationUtils.loadAnimation(this, R.anim.fab_slide_in_from_left)
@@ -206,21 +222,32 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         )
         file_fab_upload.startAnimation(hideAnimation)
         file_fab_create_folder.startAnimation(hideAnimation)
-//        file_fab_transmission.startAnimation(hideAnimation)
         file_fab_upload.visibility = View.INVISIBLE
         file_fab_create_folder.visibility = View.INVISIBLE
-//        file_fab_transmission.visibility = View.INVISIBLE
         isShowFabMenu = false
     }
 
     /**
      * 初始化文件列表
+     * ArrayList<Boolean>  参数1：是否搜索    参数2：是否为全局搜索
+     * @param isLoadMore Boolean
+     * @param isSearch ArrayList<Boolean>
      */
-    private fun initFileOrDirectoryList() {
+    private fun initFileOrDirectoryList(isLoadMore: Boolean, isSearch: ArrayList<Boolean>) {
         val jsonForPost =
-            "{\"parentPath\":\"${parentPathList[parentPathList.size - 1]}\"," +
+            "{" +
+                    if (!isSearch[1]) {  //如果不是全局搜索，则加入此字段
+                        "\"parentPath\":\"${parentPathList[parentPathList.size - 1]}\","
+                    } else {
+                        ""
+                    } +
+                    if (isSearch[0]) { //如果是搜索的话
+                        "\"search\": true,\"name\": \"3dm\","
+                    } else {
+                        "\"skip\": ${nowOnPage * 20},\"limit\":20,"
+                    } +
                     (if (labelFilter != 0) "\"label\":$labelFilter," else "") +
-                    "\"limit\":9007199254740991,\"orderby\":[" +
+                    "\"orderby\":[" +
                     (if (!defaultOrder) {
                         (if (orderFlag == 0)
                             (if (nameOrderBy != "") "[\"name\",\"$nameOrderBy\"]" else "")
@@ -234,7 +261,11 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             }, { objectReturn ->
                 val fileOrDirectoryList = objectReturn as FileOrDirectoryList
                 logd("onNext // getFileOrDirectoryList")
-                nowFileOrDirectoryList = fileOrDirectoryList
+                if (isLoadMore) {
+                    nowFileOrDirectoryList.dataList += fileOrDirectoryList.dataList
+                } else {
+                    nowFileOrDirectoryList = fileOrDirectoryList
+                }
                 setFileListAdapter()
             }) {
             toast(getString(R.string.action_fail))
@@ -311,6 +342,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             }
         })
         file_list_swipeLayout.finishRefresh(0)
+        file_list_swipeLayout.finishLoadMore(0)
         toolbar.menu.findItem(R.id.menu_file_main_star).isEnabled = true
         labelFilter = 0
     }
@@ -327,60 +359,18 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
                     true
                 }
                 R.id.menu_file_sort -> {
-                    val items = arrayOf(
-                        getString(R.string.file_sort_default),
-                        getString(R.string.file_sort_filename_asc),
-                        getString(R.string.file_sort_filename_desc),
-                        getString(R.string.file_sort_ctime_asc),
-                        getString(R.string.file_sort_ctime_desc),
-                    )
-                    MaterialAlertDialogBuilder(this)
-                        .setTitle(resources.getString(R.string.file_sort_title))
-                        .setItems(items) { dialog, which ->
-                            when (which) {
-                                0 -> { //恢复默认排序
-                                    defaultOrder = true
-                                    file_list_swipeLayout.autoRefresh()
-                                }
-                                1 -> { //按文件名正序
-                                    nameOrderBy = "asc"
-                                    orderFlag = 0
-                                    defaultOrder = false
-                                    file_list_swipeLayout.autoRefresh()
-                                }
-                                2 -> { //按文件名倒序
-                                    nameOrderBy = "desc"
-                                    orderFlag = 0
-                                    defaultOrder = false
-                                    file_list_swipeLayout.autoRefresh()
-                                }
-                                3 -> { //按创建时间正序
-                                    ctimeOrderBy = "asc"
-                                    orderFlag = 1
-                                    defaultOrder = false
-                                    file_list_swipeLayout.autoRefresh()
-                                }
-                                4 -> { //按创建时间倒序
-                                    ctimeOrderBy = "desc"
-                                    orderFlag = 1
-                                    defaultOrder = false
-                                    file_list_swipeLayout.autoRefresh()
-                                }
-                            }
-                        }
-                        .show()
+                    clickBottomBarSort()
+                    true
+                }
+                R.id.menu_file_search -> {
+                    clickBottomBarSearch()
                     true
                 }
                 else -> false
             }
         }
         bottomAppBar.setNavigationOnClickListener {
-            if (isShowFabMenu) hideMenu()
-            if (parentPathList.size == 1) {
-                toast(getString(R.string.file_to_parent_folder_toast))
-            } else {
-                backToParentPath()
-            }
+            super.onBackPressed()
         }
     }
 
@@ -397,18 +387,18 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
      */
     private fun initSpotlight() {
         val targets = ArrayList<Target>()
-        val targetlayout = layoutInflater.inflate(R.layout.layout_target, FrameLayout(this))
-        targetlayout.isClickable = true
+        val targetLayout = layoutInflater.inflate(R.layout.layout_target, FrameLayout(this))
+        targetLayout.isClickable = true
         val backToParentTarget = Target.Builder()
-            .setAnchor(getBottomBarItemView(bottomAppBar.navigationIcon)!!)
+            .setAnchor(toolbar.getToolBarItemView(toolbar.navigationIcon)!!)
             .setShape(Circle(100f))
             .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
-            .setOverlay(targetlayout)
+            .setOverlay(targetLayout)
             .setOnTargetListener(object : OnTargetListener {
                 override fun onStarted() {
-                    targetlayout.spotlight_title.text =
+                    targetLayout.spotlight_title.text =
                         getString(R.string.spotlight_backToParentTarget_title)
-                    targetlayout.spotlight_content.text =
+                    targetLayout.spotlight_content.text =
                         getString(R.string.spotlight_backToParentTarget_content)
                 }
 
@@ -417,16 +407,34 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .build()
         targets.add(backToParentTarget)
 
+        val backToMainTarget = Target.Builder()
+            .setAnchor(getBottomBarItemView(bottomAppBar.navigationIcon)!!)
+            .setShape(Circle(100f))
+            .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
+            .setOverlay(targetLayout)
+            .setOnTargetListener(object : OnTargetListener {
+                override fun onStarted() {
+                    targetLayout.spotlight_title.text =
+                        getString(R.string.spotlight_backToMainTarget_title)
+                    targetLayout.spotlight_content.text =
+                        getString(R.string.spotlight_backToMainTarget_content)
+                }
+
+                override fun onEnded() {}
+            })
+            .build()
+        targets.add(backToMainTarget)
+
         val fabTarget = Target.Builder()
             .setAnchor(file_fab)
             .setShape(Circle(100f))
             .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
-            .setOverlay(targetlayout)
+            .setOverlay(targetLayout)
             .setOnTargetListener(object : OnTargetListener {
                 override fun onStarted() {
-                    targetlayout.spotlight_title.text =
+                    targetLayout.spotlight_title.text =
                         getString(R.string.spotlight_fabTarget_title)
-                    targetlayout.spotlight_content.text =
+                    targetLayout.spotlight_content.text =
                         getString(R.string.spotlight_fabTarget_content)
                 }
 
@@ -439,12 +447,12 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .setAnchor(findViewById<View>(R.id.menu_file_transmission))
             .setShape(Circle(100f))
             .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
-            .setOverlay(targetlayout)
+            .setOverlay(targetLayout)
             .setOnTargetListener(object : OnTargetListener {
                 override fun onStarted() {
-                    targetlayout.spotlight_title.text =
+                    targetLayout.spotlight_title.text =
                         getString(R.string.spotlight_transmission_title)
-                    targetlayout.spotlight_content.text =
+                    targetLayout.spotlight_content.text =
                         getString(R.string.spotlight_transmission_content)
                 }
 
@@ -457,15 +465,15 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .setAnchor(findViewById<View>(R.id.menu_file_sort))
             .setShape(Circle(100f))
             .setEffect(RippleEffect(100f, 200f, argb(255, 72, 166, 151)))
-            .setOverlay(targetlayout)
+            .setOverlay(targetLayout)
             .setOnTargetListener(object : OnTargetListener {
                 override fun onStarted() {
-                    targetlayout.spotlight_title.text =
+                    targetLayout.spotlight_title.text =
                         getString(R.string.spotlight_sortTarget_title)
-                    targetlayout.spotlight_content.text =
+                    targetLayout.spotlight_content.text =
                         getString(R.string.spotlight_sortTarget_content)
-                    targetlayout.nextTargetButton.text = getString(R.string.spotlight_done)
-                    (targetlayout.nextTargetButton as MaterialButton).icon =
+                    targetLayout.nextTargetButton.text = getString(R.string.spotlight_done)
+                    (targetLayout.nextTargetButton as MaterialButton).icon =
                         ContextCompat.getDrawable(
                             this@FileListActivity,
                             R.drawable.ic_baseline_done_all_24
@@ -492,25 +500,8 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             .build()
 
         spotlight.start()
-        targetlayout.nextTargetButton.setOnClickListener { spotlight.next() }
+        targetLayout.nextTargetButton.setOnClickListener { spotlight.next() }
     }
-
-    //获取 Toolbar 图标的 View
-//    private fun getToolBarItemView(drawable: Drawable?): View? {
-//        val size: Int = toolbar.childCount
-////        logd("获取底部栏的详情：size为$size")
-//        for (i in 0 until size) {
-//            val child: View = toolbar.getChildAt(i)
-////            logd("获取底部栏的详情：view为$child")
-//            if (child is ImageButton) {
-//                if (child.drawable === drawable) {
-////                    logd("获取底部栏的详情：drawable${child.drawable}")
-//                    return child
-//                }
-//            }
-//        }
-//        return null
-//    }
 
     /**
      * 获取 BottomBar 图标的 View
@@ -547,6 +538,99 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
         bottomDialog.show()
         logd("触发了BottomDialog")
         initAriaDownloader(view)
+    }
+
+    /**
+     * 点击 BottomBar 中的 排序
+     */
+    private fun clickBottomBarSort() {
+        val items = arrayOf(
+            getString(R.string.file_sort_default),
+            getString(R.string.file_sort_filename_asc),
+            getString(R.string.file_sort_filename_desc),
+            getString(R.string.file_sort_ctime_asc),
+            getString(R.string.file_sort_ctime_desc),
+        )
+        MaterialAlertDialogBuilder(this)
+            .setTitle(resources.getString(R.string.file_sort_title))
+            .setItems(items) { dialog, which ->
+                when (which) {
+                    0 -> { //恢复默认排序
+                        defaultOrder = true
+                        file_list_swipeLayout.autoRefresh()
+                    }
+                    1 -> { //按文件名正序
+                        nameOrderBy = "asc"
+                        orderFlag = 0
+                        defaultOrder = false
+                        file_list_swipeLayout.autoRefresh()
+                    }
+                    2 -> { //按文件名倒序
+                        nameOrderBy = "desc"
+                        orderFlag = 0
+                        defaultOrder = false
+                        file_list_swipeLayout.autoRefresh()
+                    }
+                    3 -> { //按创建时间正序
+                        ctimeOrderBy = "asc"
+                        orderFlag = 1
+                        defaultOrder = false
+                        file_list_swipeLayout.autoRefresh()
+                    }
+                    4 -> { //按创建时间倒序
+                        ctimeOrderBy = "desc"
+                        orderFlag = 1
+                        defaultOrder = false
+                        file_list_swipeLayout.autoRefresh()
+                    }
+                }
+            }
+            .show()
+    }
+
+    /**
+     * 点击 BottomBar 中的 搜索
+     */
+    private fun clickBottomBarSearch() {
+        val viewInflated: View = LayoutInflater.from(this@FileListActivity)
+            .inflate(
+                R.layout.dialog_edittext,
+                dialog_layout as ViewGroup?,
+                false
+            )
+        val textInputLayout =
+            viewInflated.findViewById(R.id.dialog_textField) as TextInputLayout
+        val editInputLayout =
+            viewInflated.findViewById(R.id.dialog_editText) as TextInputEditText
+        textInputLayout.hint =
+            getString(R.string.file_search_dialog_title)
+        editInputLayout.isFocusable = true
+        editInputLayout.requestFocus()
+        MaterialAlertDialogBuilder(this@FileListActivity)
+            .setTitle(resources.getString(R.string.file_search_title))
+            .setView(viewInflated)
+            .setNegativeButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(resources.getString(R.string.file_search_dialog_all)) { _, _ ->
+                val editString = editInputLayout.text.toString()
+                if (editString.trim().isNotEmpty()) {
+                    searchWords = editString
+                    file_list_swipeLayout.finishLoadMoreWithNoMoreData()
+                    initFileOrDirectoryList(false, arrayListOf(true, true))
+                } else {
+                    toast(getString(R.string.file_search_dialog_fail))
+                }
+            }
+            .setNeutralButton(resources.getString(R.string.file_search_dialog_this)) { _, _ ->
+                val editString = editInputLayout.text.toString()
+                if (editString.trim().isNotEmpty()) {
+                    searchWords = editString
+                    file_list_swipeLayout.finishLoadMoreWithNoMoreData()
+                    initFileOrDirectoryList(false, arrayListOf(true, false))
+                } else {
+                    toast(getString(R.string.file_search_dialog_fail))
+                }
+            }
+            .show()
     }
 
     /**
@@ -782,6 +866,7 @@ class FileListActivity : BaseActivity(), ColorPickerDialogListener {
             if (parentPathList.size == 1) {
                 super.onBackPressed()
             } else {
+                nowOnPage = 0
                 backToParentPath()
             }
         }

@@ -24,6 +24,7 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/file_list_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -46,7 +47,7 @@
         <ImageView
             android:id="@+id/file_list_fileicon"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="58dp"
             android:clickable="false"
             android:src="@drawable/file_icon_unknown"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/colorGreyLight"
                     android:hint="                                                                                                                                                                                                                                "
-                    android:singleLine="true"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:textColor="?android:attr/textColorPrimary"
                     android:textStyle="bold" />
 

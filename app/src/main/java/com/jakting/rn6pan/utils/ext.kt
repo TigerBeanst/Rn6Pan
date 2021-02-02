@@ -1,13 +1,18 @@
 package com.jakting.rn6pan.utils
 
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_choose_path.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.HttpException
 import java.math.BigDecimal
+
 
 val NUDE_URL = "2dland.cn"
 val API_NUDE_URL = "api.$NUDE_URL"
@@ -80,3 +85,24 @@ fun getPostBody(jsonForPost: String): RequestBody {
     )
 }
 
+
+/**
+ * 获取 Toolbar 图标的 View
+ * @param drawable Drawable?
+ * @return View?
+ */
+fun Toolbar.getToolBarItemView(drawable: Drawable?): View? {
+    val size: Int = this.childCount
+//        logd("获取底部栏的详情：size为$size")
+    for (i in 0 until size) {
+        val child: View = this.getChildAt(i)
+//            logd("获取底部栏的详情：view为$child")
+        if (child is ImageButton) {
+            if (child.drawable === drawable) {
+//                    logd("获取底部栏的详情：drawable${child.drawable}")
+                return child
+            }
+        }
+    }
+    return null
+}

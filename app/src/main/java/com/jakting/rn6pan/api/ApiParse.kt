@@ -51,6 +51,12 @@ toast(getString(R.string.action_fail))
 interface ApiParse {
 
     /*
+    杂项请求
+     */
+    @GET("version.json")
+    fun getUpdate(): Observable<AppUpdateData>
+
+    /*
     登录请求
      */
 
@@ -180,5 +186,29 @@ interface ApiParse {
      */
     @POST("offline/quota")
     fun getOfflineQuota(@Body requestBody: RequestBody): Observable<OfflineQuota>
+
+    /**
+     * v3/50.离线任务/000.080.列出离线任务.md 「列出文件夹下所有文件」
+     * @param requestBody RequestBody
+     * @return Observable<OfflineList>
+     */
+    @POST("offline/list")
+    fun getOfflineList(@Body requestBody: RequestBody): Observable<OfflineList>
+
+    /**
+     * v3/50.离线任务/000.020.10.预解析链接.md 「预解析链接」
+     * @param requestBody RequestBody
+     * @return Observable<OfflineParse>
+     */
+    @POST("offline/parse")
+    fun getOfflineParse(@Body requestBody: RequestBody): Observable<OfflineParse>
+
+    /**
+     * v3/50.离线任务/000.050.添加离线任务.md 「添加离线任务」
+     * @param requestBody RequestBody
+     * @return Observable<OfflineAddResponse>
+     */
+    @POST("offline/add")
+    fun addOfflineTask(@Body requestBody: RequestBody): Observable<OfflineAddResponse>
 
 }

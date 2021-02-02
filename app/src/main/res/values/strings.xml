@@ -15,6 +15,11 @@
     <string name="main_check_login_status_second_title_error">点击前去登录</string>
     <string name="main_check_login_status_sub_until">订阅有效期至 </string>
     <string name="main_check_login_status_sub_expires">您的订阅已过期</string>
+    <string name="main_update_title">有新版本</string>
+    <string name="main_update_msg"><b>检测到存在新 %s 版本 %s(%d)</b>\n\n更新日志：\n%s\n\n备注：不支持 x86 系列设备，由于安装包体积以后应该也不会支持。在网络条件允许的情况下，请尽量使用「直接下载」。</string>
+    <string name="main_update_button_release">前往发布页</string>
+    <string name="main_update_button_direct">直接下载</string>
+    <string name="main_update_button_mirror">镜像下载</string>
 
     <string name="main_file_manager_title">文件管理</string>
     <string name="main_file_manager_second_title">（未知配额）</string>
@@ -54,8 +59,7 @@
 
     <string name="file_transmission">传输列表</string>
 
-    <string name="file_to_parent_folder">返回上个文件夹</string>
-    <string name="file_to_parent_folder_toast">已经是根目录了</string>
+    <string name="file_to_parent_home">返回首页</string>
 
     <string name="file_sort_title">排序方式</string>
     <string name="file_sort_default">恢复默认排序</string>
@@ -63,6 +67,12 @@
     <string name="file_sort_filename_desc">按文件名倒序</string>
     <string name="file_sort_ctime_asc">按创建时间正序</string>
     <string name="file_sort_ctime_desc">按创建时间倒序</string>
+
+    <string name="file_search_title">搜索</string>
+    <string name="file_search_dialog_title">搜索文件名</string>
+    <string name="file_search_dialog_all">全局搜索</string>
+    <string name="file_search_dialog_this">当前目录下搜索</string>
+    <string name="file_search_dialog_fail">搜索内容为空或不合法</string>
 
     <string name="file_more_download">下载</string>
     <string name="file_more_download_to">下载至</string>
@@ -115,6 +125,35 @@
     <string name="transmission_download_need_permission">此应用需要获取 SD 卡权限。请放心，下载目录将完全符合 Android 标准。</string>
     <string name="transmission_upload_title">上传</string>
 
+    <!--offline-->
+    <string name="offline_toolbar_title">离线下载</string>
+    <string name="offline_toolbar_delete_all">清除所有任务</string>
+    <string name="offline_toolbar_delete_finished">清除已完成任务</string>
+    <string name="offline_toolbar_delete_unfinished">清除未完成任务</string>
+    <string name="offline_toolbar_delete_error">清除错误任务</string>
+    <string name="offline_toolbar_delete_body">您确定要%s吗？此操作无法撤回。</string>
+    <string name="offline_toolbar_delete_file_too">同时删除文件</string>
+    <string name="offline_item_task_status">任务状态：</string>
+    <string name="offline_new_title">创建离线任务</string>
+    <string name="offline_new_by_links">通过 URL 下载</string>
+    <string name="offline_new_by_bt">通过 BT 种子下载</string>
+    <string name="offline_new_by_browser">通过浏览器批量读取</string>
+    <string name="offline_new_by_links_title">链接</string>
+    <string name="offline_new_by_links_username">用户名</string>
+    <string name="offline_new_by_links_password">密码</string>
+    <string name="offline_new_by_links_msg">单个任务<b>最大</b> 256GB。请输入 URL 地址/磁力链接/电驴地址/迅雷链接，每行一条，回车换行。<b>需要用户名或密码的请单独一条提交，勿批量。迅雷解析后若链接指向 torrent 种子文件地址，则只会离线到种子文件本身。</b><u>百度网盘为人工代下载，仅对订阅用户开放，在密码处填写分享码，用户名留空。</u>6 盘官方可能会对下载链接进行审查，请确保下载链接合乎当地法规。</string>
+    <string name="offline_new_by_links_button_parse">预解析</string>
+    <string name="offline_new_by_links_button_parse_empty">输入内容为空，请填写链接</string>
+    <string name="offline_new_by_links_button_parse_error">无法解析不受支持的链接：</string>
+    <string name="offline_new_by_links_button_submit">提交离线</string>
+    <string name="offline_new_by_links_button_submit_empty">预解析队列为空，请确认是否成功预解析</string>
+    <string name="offline_new_by_links_button_submit_ok">已成功提交 %d 条离线任务</string>
+    <string name="offline_new_by_links_path_title">下载位置</string>
+    <string name="offline_new_by_links_path_button">选择</string>
+    <string name="offline_new_by_links_path_toolbar">选择路径</string>
+    <string name="offline_new_by_links_task_title">任务列表</string>
+    <string name="offline_new_by_links_task_delete_title">是否移除此预解析任务？</string>
+
     <!--setting-->
     <string name="setting_toolbar_title">设置</string>
     <string name="setting_video_title">视频</string>
@@ -146,6 +185,8 @@
     <string name="spotlight_done">明白了</string>
     <string name="spotlight_backToParentTarget_title">返回上级</string>
     <string name="spotlight_backToParentTarget_content">点击此处可以返回到上级文件夹</string>
+    <string name="spotlight_backToMainTarget_title">返回首页</string>
+    <string name="spotlight_backToMainTarget_content">点击此处可以返回到应用首页</string>
     <string name="spotlight_fabTarget_title">浮动按钮</string>
     <string name="spotlight_fabTarget_content">点击此处可以唤出上传文件和创建文件夹</string>
     <string name="spotlight_transmission_title">传输列表</string>

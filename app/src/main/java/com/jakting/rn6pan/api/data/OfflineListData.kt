@@ -6,13 +6,13 @@ data class OfflineList(
 
 data class OfflineFile(
     var taskIdentity: String,
-    var userIdentity: Int,
-    var createTime: Int,
+    var userIdentity: Long,
+    var createTime: Long,
     var name: String,
     var type: Int,
     var status: Int,
-    var size: Int,
-    var processedSize: Int,
+    var size: Long,
+    var processedSize: Long,
     var progress: Int,
     var errorCode: Int,
     var errorMessage: String,
