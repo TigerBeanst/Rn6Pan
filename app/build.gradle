@@ -14,8 +14,8 @@ android {
         applicationId "com.jakting.rn6pan"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 202102020
-        versionName "0.1.1.0"
+        versionCode 202102060
+        versionName "0.1.1.1"
 
         javaCompileOptions {
             annotationProcessorOptions {
