@@ -1,15 +1,14 @@
 package com.jakting.rn6pan.activity.player
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.jakting.rn6pan.BaseActivity
 import com.jakting.rn6pan.R
 import com.jakting.rn6pan.api.accessAPI
 import com.jakting.rn6pan.api.data.FileOrDirectory
+import com.jakting.rn6pan.utils.*
 import com.jakting.rn6pan.utils.MyApplication.Companion.nowTimeStamp
-import com.jakting.rn6pan.utils.getErrorString
-import com.jakting.rn6pan.utils.getPostBody
-import com.jakting.rn6pan.utils.logd
 import com.jakting.rn6pan.utils.toast
 import com.shuyu.gsyvideoplayer.GSYVideoManager
 import com.shuyu.gsyvideoplayer.cache.CacheFactory
@@ -30,7 +29,7 @@ class PlayerActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_simple_play)
-        val decorView: View = this.window.decorView
+        hideSystemUI()
         PlayerFactory.setPlayManager(IjkPlayerManager::class.java)
         CacheFactory.setCacheManager(ProxyCacheManager::class.java)
         initPlayer()
@@ -94,7 +93,10 @@ class PlayerActivity : BaseActivity() {
                 logd("onNext // getVideoPreviewURLByDownloadAddress")
                 nowTimeStamp = System.currentTimeMillis() / 1000
                 startPlay(fileOrDirectory.downloadAddress, fileOrDirectory.name)
-            }) {t ->
+                if (fileOrDirectory.downloadAddress.startsWith("https://cold")) {
+                    longtoast(getString(R.string.player_video_cold))
+                }
+            }) { t ->
             logd("onError // getVideoPreviewURLByDownloadAddress")
             val errorString: String = getErrorString(t)
             logd(errorString)
@@ -134,5 +136,15 @@ class PlayerActivity : BaseActivity() {
         //释放所有
         videoPlayer!!.setVideoAllCallBack(null)
         super.onBackPressed()
+    }
+
+    private fun hideSystemUI() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                    View.SYSTEM_UI_FLAG_FULLSCREEN
+        }
     }
 }

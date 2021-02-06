@@ -172,6 +172,8 @@
     <string name="about_page_open_source">开放源代码许可</string>
 
     <!--player-->
+    <string name="player_video_cold">您正在预览冷资源，缓冲速度可能较为不佳</string>
+
     <string name="player_change_play_speed">播放速度(%.2fx)</string>
     <string name="player_change_rotate">旋转画面</string>
     <string name="player_ratio_default">默认比例</string>

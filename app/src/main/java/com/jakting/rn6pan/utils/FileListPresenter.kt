@@ -19,6 +19,7 @@ import com.maning.imagebrowserlibrary.MNImageBrowser
 import com.maning.imagebrowserlibrary.model.ImageBrowserConfig
 import kotlinx.android.synthetic.main.activity_user_file_list.*
 
+
 interface ItemListener {
     fun onClick(v: View)
     fun onLongClick(v: View): Boolean
@@ -122,7 +123,12 @@ class Presenter(var context: Context) : ItemListener {
         return true
     }
 
-
+    /**
+     * 使用下载地址作为图片预览地址
+     * @param identity String
+     * @param viewHolder ViewHolder
+     * @param parentContext Context
+     */
     private fun getImagePreviewURLByDownloadAddress(
         identity: String,
         viewHolder: FileListAdapter.ViewHolder,
@@ -144,7 +150,6 @@ class Presenter(var context: Context) : ItemListener {
         }
 
     }
-
 
     private fun clickImage(
         playAddress: String,
