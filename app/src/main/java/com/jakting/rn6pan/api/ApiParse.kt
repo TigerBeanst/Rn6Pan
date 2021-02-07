@@ -53,6 +53,10 @@ interface ApiParse {
     /*
     杂项请求
      */
+    /**
+     * 检测更新
+     * @return Observable<AppUpdateData>
+     */
     @GET("version.json")
     fun getUpdate(): Observable<AppUpdateData>
 
@@ -210,5 +214,21 @@ interface ApiParse {
      */
     @POST("offline/add")
     fun addOfflineTask(@Body requestBody: RequestBody): Observable<OfflineAddResponse>
+
+    /**
+     * v3/50.离线任务/000.110.清空离线任务.md 「清空离线任务」
+     * @param requestBody RequestBody
+     * @return Observable<OfflineClear>
+     */
+    @POST("offline/clear")
+    fun clearOfflineTask(@Body requestBody: RequestBody): Observable<OfflineClear>
+
+    /**
+     * v3/50.离线任务/000.090.删除离线任务.md 「删除离线任务」
+     * @param requestBody RequestBody
+     * @return Observable<OfflineDelete>
+     */
+    @POST("offline/delete")
+    fun deleteOfflineTask(@Body requestBody: RequestBody): Observable<OfflineDelete>
 
 }
