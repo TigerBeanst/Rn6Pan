@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
 }
 
@@ -14,8 +15,8 @@ android {
         applicationId "com.jakting.rn6pan"
         minSdkVersion 23
         targetSdkVersion 30
-        versionCode 202102060
-        versionName "0.1.1.1"
+        versionCode 202102070
+        versionName "0.1.1.2"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -65,8 +66,8 @@ dependencies {
     implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
 
     implementation platform('com.google.firebase:firebase-bom:26.4.0')
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
 
     implementation 'com.drakeet.about:about:2.4.1'
     implementation 'com.drakeet.multitype:multitype:4.2.0'
