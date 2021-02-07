@@ -1,19 +1,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:id="@+id/menu_offline_toolbar_delete_all"
-        android:contentDescription="@string/offline_toolbar_delete_all"
-        android:title="@string/offline_toolbar_delete_all"
+        android:contentDescription="@string/offline_toolbar_clear_all"
+        android:title="@string/offline_toolbar_clear_all"
         app:showAsAction="never"/>
     <item android:id="@+id/menu_offline_toolbar_delete_finished"
-        android:contentDescription="@string/offline_toolbar_delete_finished"
-        android:title="@string/offline_toolbar_delete_finished"
+        android:contentDescription="@string/offline_toolbar_clear_finished"
+        android:title="@string/offline_toolbar_clear_finished"
         app:showAsAction="never"/>
     <item android:id="@+id/menu_offline_toolbar_delete_unfinished"
-        android:contentDescription="@string/offline_toolbar_delete_unfinished"
-        android:title="@string/offline_toolbar_delete_unfinished"
+        android:contentDescription="@string/offline_toolbar_clear_unfinished"
+        android:title="@string/offline_toolbar_clear_unfinished"
         app:showAsAction="never"/>
     <item android:id="@+id/menu_offline_toolbar_delete_error"
-        android:contentDescription="@string/offline_toolbar_delete_error"
-        android:title="@string/offline_toolbar_delete_error"
+        android:contentDescription="@string/offline_toolbar_clear_error"
+        android:title="@string/offline_toolbar_clear_error"
         app:showAsAction="never"/>
 </menu>

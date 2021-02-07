@@ -12,6 +12,8 @@ import com.jakting.rn6pan.R
 import com.jakting.rn6pan.activity.user.offline.OfflineByLinksActivity
 import com.jakting.rn6pan.adapter.OfflineListAdapter
 import com.jakting.rn6pan.api.accessAPI
+import com.jakting.rn6pan.api.data.OfflineClear
+import com.jakting.rn6pan.api.data.OfflineClearDeleteReturn
 import com.jakting.rn6pan.api.data.OfflineList
 import com.jakting.rn6pan.utils.getPostBody
 import com.jakting.rn6pan.utils.logd
@@ -114,6 +116,57 @@ class OfflineListActivity : BaseActivity() {
     }
 
     /**
+     * 清空离线任务列表
+     * @param type Int
+     * @param deleteFile Boolean
+     */
+    private fun clearOfflineTask(type: Int, deleteFile: Boolean) {
+        val typeString = when (type) {
+            10000 -> getString(R.string.offline_toolbar_clear_all)
+            1000 -> getString(R.string.offline_toolbar_clear_finished)
+            100 -> getString(R.string.offline_toolbar_clear_unfinished)
+            -100 -> getString(R.string.offline_toolbar_clear_error)
+            else -> getString(R.string.offline_toolbar_clear_unknown)
+        }
+        if (typeString != getString(R.string.offline_toolbar_clear_unknown)) {
+            val jsonForPost =
+                "{\"type\":$type,\"deleteFile\":$deleteFile }"
+            accessAPI(
+                {
+                    clearOfflineTask(getPostBody(jsonForPost))
+                }, { objectReturn ->
+                    val offlineClearDeleteReturn = objectReturn as OfflineClearDeleteReturn
+                    logd("onNext // clearOfflineTask")
+                    if (offlineClearDeleteReturn.successCount == 1) {
+                        if (deleteFile) { //顺带文件删除了
+                            toast(
+                                String.format(
+                                    getString(R.string.offline_toolbar_delete_file_ok),
+                                    typeString
+                                )
+                            )
+                        } else { //没有删除文件
+                            toast(
+                                String.format(
+                                    getString(R.string.offline_toolbar_delete_file_ok_without_file),
+                                    typeString
+                                )
+                            )
+                        }
+                    } else {
+                        toast(getString(R.string.action_fail))
+                    }
+                    setOfflineListAdapter()
+                }) {
+                toast(getString(R.string.action_fail))
+            }
+        } else {
+            toast(getString(R.string.offline_toolbar_clear_unknown))
+        }
+
+    }
+
+    /**
      * 设置离线列表适配器
      */
     private fun setOfflineListAdapter() {
@@ -158,10 +211,10 @@ class OfflineListActivity : BaseActivity() {
                         startActivityForResult(intent, 1)
                     }
                     1 -> {
-                        intent = Intent(this, OfflineByLinksActivity::class.java)
+//                        intent = Intent(this, OfflineByLinksActivity::class.java)
                     }
                     2 -> {
-                        intent = Intent(this, OfflineByLinksActivity::class.java)
+//                        intent = Intent(this, OfflineByLinksActivity::class.java)
                     }
                 }
             }

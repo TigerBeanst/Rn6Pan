@@ -127,12 +127,15 @@
 
     <!--offline-->
     <string name="offline_toolbar_title">离线下载</string>
-    <string name="offline_toolbar_delete_all">清除所有任务</string>
-    <string name="offline_toolbar_delete_finished">清除已完成任务</string>
-    <string name="offline_toolbar_delete_unfinished">清除未完成任务</string>
-    <string name="offline_toolbar_delete_error">清除错误任务</string>
+    <string name="offline_toolbar_clear_all">清除所有任务</string>
+    <string name="offline_toolbar_clear_finished">清除已完成任务</string>
+    <string name="offline_toolbar_clear_unfinished">清除未完成任务</string>
+    <string name="offline_toolbar_clear_error">清除错误任务</string>
+    <string name="offline_toolbar_clear_unknown">未知参数</string>
     <string name="offline_toolbar_delete_body">您确定要%s吗？此操作无法撤回。</string>
-    <string name="offline_toolbar_delete_file_too">同时删除文件</string>
+    <string name="offline_toolbar_delete_file_too">连带文件删除</string>
+    <string name="offline_toolbar_delete_file_ok">已%s</string>
+    <string name="offline_toolbar_delete_file_ok_without_file">已%s，但您仍可以在对应文件夹中找到文件</string>
     <string name="offline_item_task_status">任务状态：</string>
     <string name="offline_new_title">创建离线任务</string>
     <string name="offline_new_by_links">通过 URL 下载</string>
